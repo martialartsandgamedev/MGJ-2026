@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: a369c88abab67dc449ed13c8f1bb7187
+TextScriptImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 47200
+  packageName: 'Advanced Multi-Scene: Cross-Scene References!'
+  packageVersion: 0.91a
+  assetPath: Assets/Plugins/CodingJar/MultiScene/Documentation.txt
+  uploadId: 396142

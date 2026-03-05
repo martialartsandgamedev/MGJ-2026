@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b09f23ab829b0c74ba356117b270dfae
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 47200
+  packageName: 'Advanced Multi-Scene: Cross-Scene References!'
+  packageVersion: 0.91a
+  assetPath: Assets/Plugins/CodingJar/MultiScene/Scripts/AmsDebug.cs
+  uploadId: 396142

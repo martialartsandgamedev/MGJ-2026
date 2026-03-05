@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 4aa97048504225443bd7038a745ab9e6
+timeCreated: 1452822591
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 47200
+  packageName: 'Advanced Multi-Scene: Cross-Scene References!'
+  packageVersion: 0.91a
+  assetPath: Assets/Plugins/CodingJar/MultiScene/Editor/EditorCrossSceneReference.cs
+  uploadId: 396142

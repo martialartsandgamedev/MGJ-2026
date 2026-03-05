@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 9814e710c896e2b4c8e53b82e44ddcb2
+timeCreated: 1452486782
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 47200
+  packageName: 'Advanced Multi-Scene: Cross-Scene References!'
+  packageVersion: 0.91a
+  assetPath: Assets/Plugins/CodingJar/MultiScene/Editor/AmsSceneReferenceDrawer.cs
+  uploadId: 396142

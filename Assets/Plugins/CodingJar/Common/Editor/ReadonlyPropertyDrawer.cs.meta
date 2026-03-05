@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: b62c52ec50ad5124ebd2e738325da212
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 47200
+  packageName: 'Advanced Multi-Scene: Cross-Scene References!'
+  packageVersion: 0.91a
+  assetPath: Assets/Plugins/CodingJar/Common/Editor/ReadonlyPropertyDrawer.cs
+  uploadId: 396142
