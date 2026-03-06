@@ -157,6 +157,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_controlHandler: {fileID: 5399179832755318703}
+  maxSpeed: 2.5
+  dragStrength: 0.2
+  acceleration: 1
+  currentSpeed: 0
 --- !u!114 &5399179832755318703
 MonoBehaviour:
   m_ObjectHideFlags: 0
