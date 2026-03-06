@@ -9,15 +9,9 @@ public class CameraManager : MonoBehaviour
 
     private void OnEnable()
     {
-    
-    }
-
-    private void Start()
-    {
         InputManager.ins.ControllableChangeEvent.AddListener(OnControllableChange);
     }
-    
-    
+
     private void OnDisable()
     {
         InputManager.ins.ControllableChangeEvent.RemoveListener(OnControllableChange);
