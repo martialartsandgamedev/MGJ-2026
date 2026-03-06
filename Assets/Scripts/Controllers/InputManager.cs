@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.Utilities;
 
 [Serializable]
@@ -64,6 +63,7 @@ public class InputManager : MonoBehaviour
 
     private void OnDisable()
     {
+        StopListeningForJoins();
         foreach (var slot in m_slots)
             slot.Dispose();
         m_slots.Clear();
@@ -87,52 +87,41 @@ public class InputManager : MonoBehaviour
         m_slots.Remove(slot);
     }
 
-private bool m_listeningForJoins = false;
+    private IDisposable m_anyButtonListener;
 
-public void BeginListeningForJoins() => m_listeningForJoins = true;
-public void StopListeningForJoins()  => m_listeningForJoins = false;
+    public void BeginListeningForJoins()
+    {
+        m_anyButtonListener ??= InputSystem.onAnyButtonPress.Call(OnAnyButtonPressed);
+    }
+
+    public void StopListeningForJoins()
+    {
+        m_anyButtonListener?.Dispose();
+        m_anyButtonListener = null;
+    }
+
+    private void OnAnyButtonPressed(InputControl control)
+    {
+        if (control.synthetic) return;
+
+        var device = control.device;
+        var usedDevices = new HashSet<InputDevice>(m_slots.SelectMany(s => s.Devices));
+
+        InputDevice[] candidates;
+        if      (device is Keyboard && Mouse.current != null)    candidates = new InputDevice[] { device, Mouse.current };
+        else if (device is Mouse    && Keyboard.current != null) candidates = new InputDevice[] { device, Keyboard.current };
+        else                                                     candidates = new InputDevice[] { device };
+
+        foreach (var d in candidates)
+            if (usedDevices.Contains(d)) return;
+
+        PlayerJoinRequestEvent?.Invoke(candidates);
+    }
 
     private void Update()
     {
-        if (m_listeningForJoins)
-            PollForJoins();
-
         foreach (var slot in m_slots)
             slot.Tick();
-
-    }
-
-    private void PollForJoins()
-    {
-        var usedDevices = new HashSet<InputDevice>(m_slots.SelectMany(s => s.Devices));
-
-        foreach (var device in InputSystem.devices)
-        {
-            if (!AnyButtonPressedThisFrame(device)) continue;
-
-            InputDevice[] candidates;
-            if      (device is Keyboard && Mouse.current != null)    candidates = new InputDevice[] { device, Mouse.current };
-            else if (device is Mouse    && Keyboard.current != null) candidates = new InputDevice[] { device, Keyboard.current };
-            else                                                     candidates = new InputDevice[] { device };
-
-            bool alreadyUsed = false;
-            foreach (var d in candidates)
-                if (usedDevices.Contains(d)) { alreadyUsed = true; break; }
-
-            if (!alreadyUsed)
-            {
-                PlayerJoinRequestEvent?.Invoke(candidates);
-                return; // One join per frame
-            }
-        }
-    }
-
-    private static bool AnyButtonPressedThisFrame(InputDevice device)
-    {
-        foreach (var control in device.allControls)
-            if (control is ButtonControl button && !control.synthetic && button.wasPressedThisFrame)
-                return true;
-        return false;
     }
 
     public void ToggleInputs(bool active)
