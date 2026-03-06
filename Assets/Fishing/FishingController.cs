@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnityEngine.Events;
 
 namespace Controllers
 {
@@ -9,6 +10,18 @@ namespace Controllers
     {
         [SerializeField] private FishingSettings settings;
         [SerializeField] private DefaultFishingUIController uiController;
+
+        public enum State
+        {
+            Initialising = 0,
+            ReadyToStart,
+            InProgress,
+            Complete,
+            Failed
+        }
+
+        public UnityEvent<State> onStateChanged;
+        public State CurrentState { get; private set; }
 
         private double _elapsed;
         private List<FishingAction> _actions;
@@ -18,27 +31,20 @@ namespace Controllers
             // Hookup inputs
             _actions = FishingAction.Create(settings);
             uiController.Initialise(_actions);
-        }
-
-        private FishingAction GetActionInActiveWindow()
-        {
-            return _actions.FirstOrDefault(action =>
-                action.Attempt == FishingAction.AttemptState.Upcoming &&
-                _elapsed >= action.StartTime &&
-                _elapsed <= action.EndTime);
-        }
-
-        private void OnDisable()
-        {
+            SetState(State.ReadyToStart);
         }
 
         private void Update()
         {
+            if (CurrentState != State.InProgress)
+            {
+                return;
+            }
+
             _elapsed += Time.deltaTime / settings.Duration;
             uiController.SetProgress((float)_elapsed);
             if (_elapsed >= 1.0)
             {
-                Debug.Log("Ran out of time, running it back?");
                 _elapsed -= 1.0;
                 return;
             }
@@ -50,16 +56,46 @@ namespace Controllers
             {
                 activeAction.Attempt = FishingAction.AttemptState.Success;
                 uiController.CompleteAction(activeAction.Index);
-                Debug.Log($"Successfully hit action {activeAction.Index}");
+                Debug.Log($"[FishingController] Successfully hit action {activeAction.Index}");
                 if (_actions.All(action => action.Attempt == FishingAction.AttemptState.Success))
                 {
-                    Debug.Log("Successfully hit all actions");
+                    SetState(State.Complete);
+                    uiController.SetProgress(1.0f);
+                    Debug.Log("[FishingController] Successfully hit all actions");
                 }
             }
             else
             {
-                Debug.Log("Failed to hit action");
+                Debug.Log("[FishingController] Failed to hit action");
             }
+        }
+
+        public void StartFishing()
+        {
+            if (CurrentState != State.InProgress)
+            {
+                SetState(State.InProgress);
+            }
+        }
+
+        private void SetState(State state)
+        {
+            if (state == CurrentState)
+            {
+                return;
+            }
+
+            Debug.Log($"[FishingController] Setting state to {Enum.GetName(typeof(State), state)}");
+            CurrentState = state;
+            onStateChanged.Invoke(CurrentState);
+        }
+
+        private FishingAction GetActionInActiveWindow()
+        {
+            return _actions.FirstOrDefault(action =>
+                action.Attempt == FishingAction.AttemptState.Upcoming &&
+                _elapsed >= action.StartTime &&
+                _elapsed <= action.EndTime);
         }
     }
 }
