@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
@@ -8,6 +9,11 @@ public class PlayerSlot
     public readonly IControllable Controllable;
 
     public ReadOnlyArray<InputDevice> Devices => m_user.pairedDevices;
+
+#if UNITY_EDITOR
+    public event Action DebugDespawnPressed;
+    private InputAction m_debugDespawnAction;
+#endif
 
     private readonly Inputs m_inputs;
     private InputUser m_user;
@@ -32,6 +38,14 @@ public class PlayerSlot
         m_inputs.Player.Attack.canceled    += OnPrimaryAction;
         m_inputs.Player.Interact.started   += OnInteract;
         m_inputs.Player.Interact.canceled  += OnInteract;
+
+#if UNITY_EDITOR
+        m_debugDespawnAction = new InputAction("DebugDespawn", InputActionType.Button);
+        m_debugDespawnAction.AddBinding("<Gamepad>/select");
+        m_debugDespawnAction.AddBinding("<Keyboard>/escape");
+        m_debugDespawnAction.performed += OnDebugDespawn;
+        m_debugDespawnAction.Enable();
+#endif
     }
 
     public void Dispose()
@@ -43,9 +57,29 @@ public class PlayerSlot
         m_inputs.Player.Interact.started   -= OnInteract;
         m_inputs.Player.Interact.canceled  -= OnInteract;
 
+#if UNITY_EDITOR
+        m_debugDespawnAction.performed -= OnDebugDespawn;
+        m_debugDespawnAction.Disable();
+        m_debugDespawnAction.Dispose();
+#endif
+
         m_inputs.Dispose();
         m_user.UnpairDevicesAndRemoveUser();
     }
+
+#if UNITY_EDITOR
+    private void OnDebugDespawn(InputAction.CallbackContext ctx)
+    {
+        foreach (var device in m_user.pairedDevices)
+        {
+            if (ctx.control.device == device)
+            {
+                DebugDespawnPressed?.Invoke();
+                return;
+            }
+        }
+    }
+#endif
 
     public void SetPlayerInputActive(bool active)
     {
