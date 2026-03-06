@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.Utilities;
 
 [Serializable]
@@ -37,6 +38,7 @@ public class InputManager : MonoBehaviour
     public static InputManager ins;
 
     private readonly List<PlayerSlot> m_slots = new();
+    private readonly HashSet<InputDevice> m_devicesAwaitingRelease = new();
 
     public Inputs m_uiInputs;
 
@@ -71,18 +73,21 @@ public class InputManager : MonoBehaviour
         m_uiInputs = null;
     }
 
-    public void Register(IControllable controllable, InputDevice[] devices = null)
+    public PlayerSlot Register(IControllable controllable, InputDevice[] devices = null)
     {
         devices ??= GetNextAvailableDevice();
         var slot = new PlayerSlot(controllable, devices);
         m_slots.Add(slot);
         ControllableChangeEvent?.Invoke(controllable);
+        return slot;
     }
 
     public void Unregister(IControllable controllable)
     {
         var slot = m_slots.FirstOrDefault(s => s.Controllable == controllable);
         if (slot == null) return;
+        foreach (var device in slot.Devices)
+            m_devicesAwaitingRelease.Add(device);
         slot.Dispose();
         m_slots.Remove(slot);
     }
@@ -105,6 +110,8 @@ public class InputManager : MonoBehaviour
         if (control.synthetic) return;
 
         var device = control.device;
+        if (m_devicesAwaitingRelease.Contains(device)) return;
+
         var usedDevices = new HashSet<InputDevice>(m_slots.SelectMany(s => s.Devices));
 
         InputDevice[] candidates;
@@ -120,8 +127,21 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
+        if (m_devicesAwaitingRelease.Count > 0)
+            m_devicesAwaitingRelease.RemoveWhere(d => !HasAnyButtonPressed(d));
+
         foreach (var slot in m_slots)
             slot.Tick();
+    }
+
+    private static bool HasAnyButtonPressed(InputDevice device)
+    {
+        foreach (var control in device.allControls)
+        {
+            if (!control.synthetic && control is ButtonControl btn && btn.isPressed)
+                return true;
+        }
+        return false;
     }
 
     public void ToggleInputs(bool active)
