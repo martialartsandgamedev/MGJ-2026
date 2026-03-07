@@ -27,7 +27,7 @@ public struct AnimationContext
 
 public class ControlHandler: MonoBehaviour
 {
-    public CharacterController Controller;
+    public UnityEngine.CharacterController Controller;
     
 
     private void OnEnable()

@@ -20,15 +20,15 @@ namespace Controllers
         public double StartTime { get; set; }
         public double EndTime { get; set; }
 
-        public static List<FishingAction> Create(FishingSettings settings)
+        public static List<FishingAction> Create(FishingSpotContext context)
         {
-            return Enumerable.Range(0, settings.ActionCount).Select(index =>
+            return Enumerable.Range(0, context.ActionCount).Select(index =>
             {
-                var targetTime = settings.Duration / (settings.ActionCount + 1) * (index + 1);
-                var startTime = targetTime - settings.Buffer;
-                var endTime = targetTime + settings.Buffer;
-                var normalisedStartTime = startTime / settings.Duration;
-                var normalisedEndTime = endTime / settings.Duration;
+                var targetTime = context.Duration / (context.ActionCount + 1) * (index + 1);
+                var startTime = targetTime - context.Buffer;
+                var endTime = targetTime + context.Buffer;
+                var normalisedStartTime = startTime / context.Duration;
+                var normalisedEndTime = endTime / context.Duration;
 
                 return new FishingAction
                 {
