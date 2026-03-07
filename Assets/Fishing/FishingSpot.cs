@@ -97,6 +97,7 @@ namespace Controllers
         {
             Debug.LogFormat("[FishingSpot] Removing stock from {0}", name);
             context.RemainingFish -= 1;
+            SyncContext();
             if (context.RemainingFish <= 0)
             {
                 Debug.LogFormat("[FishingSpot] {0} has been depleted", name);
