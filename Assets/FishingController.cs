@@ -19,6 +19,8 @@ public class FishingController : MonoBehaviour
         IsFishing,
     }
 
+    [SerializeField] private PlayerCharacter _playerCharacter;
+    
     [Header("Debug")]
     [Tooltip("A MeshRenderer that acts as a debug way to show that the player is over a fishing spot")]
     [SerializeField]
@@ -27,7 +29,7 @@ public class FishingController : MonoBehaviour
     [Tooltip("Optional TMP Text that displays the players current state")] 
     [SerializeField]
     private TextMeshProUGUI statusText;
-
+    
     private List<FishingAction> _actions;
     private FishingSpot _activeFishingSpot;
     private PlayerState m_currentPlayerState = PlayerState.CantFish;
@@ -46,7 +48,8 @@ public class FishingController : MonoBehaviour
         }
 
         // Trigger the fishing attempt
-        if (m_currentPlayerState == PlayerState.CanFish && _activeFishingSpot && Input.GetKeyDown(KeyCode.Space))
+        // TODO: Use player input noob
+        if (m_currentPlayerState == PlayerState.CanFish && _activeFishingSpot && _playerCharacter.Inputs.Interact)
         {
             Debug.Log("[FakeGameplay] Creating fishing controller");
             StartCoroutine(TryFishActive());
@@ -55,9 +58,24 @@ public class FishingController : MonoBehaviour
 
     public void SetActiveFishingSpot(FishingSpot spot)
     {
+        if (spot == null)
+        {
+            _activeFishingSpot.OnFishingSpotDepleted.RemoveListener(OnFishingSpotDepleted);
+            SetState(PlayerState.CantFish);
+        }
+        else
+        {
+            spot.OnFishingSpotDepleted.AddListener(OnFishingSpotDepleted);
+            SetState(PlayerState.CanFish);
+        }
+
         _activeFishingSpot = spot;
-        var newState = spot == null ? PlayerState.CantFish : PlayerState.CanFish;
-        SetState(newState);
+    }
+
+    private void OnFishingSpotDepleted()
+    {
+        _activeFishingSpot = null;
+        SetState(PlayerState.CantFish);
     }
 
     public void SetState(PlayerState playerState)
@@ -127,6 +145,7 @@ public class FishingController : MonoBehaviour
             if (activeAction != null)
             {
                 Debug.Log($"[FakeGameplay] Action {activeAction.Index} is still active");
+                // TODO: Use player input
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
                     activeAction.Attempt = FishingAction.AttemptState.Success;
@@ -146,6 +165,9 @@ public class FishingController : MonoBehaviour
             {
                 uiController.SetProgress(1.0f);
                 Debug.Log("[FishingController] Successfully hit all actions");
+                SetState(PlayerState.CanFish);
+                _activeFishingSpot.RemoveStock();
+                Destroy(uiController.gameObject);
                 yield break;
             }
 

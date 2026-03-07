@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 namespace Controllers
@@ -11,9 +12,9 @@ namespace Controllers
         [SerializeField] private FishingSpotDefinition spotDefinition;
 
         public FishingSpotContext context;
+        public UnityEvent OnFishingSpotDepleted;
 
         private float _elapsed;
-
         private List<FishingAction> _actions;
 
         private void OnEnable()
@@ -50,6 +51,18 @@ namespace Controllers
             {
                 Debug.Log("[FakeGameplay] Changing state to be unable to fish");
                 fishingController.SetActiveFishingSpot(null);
+            }
+        }
+
+        public void RemoveStock()
+        {
+            Debug.LogFormat("[FishingSpot] Removing stock from {0}", name);
+            context.RemainingFish -= 1;
+            if (context.RemainingFish <= 0)
+            {
+                Debug.LogFormat("[FishingSpot] {0} has been depleted", name);
+                OnFishingSpotDepleted.Invoke();
+                Destroy(gameObject);
             }
         }
 
