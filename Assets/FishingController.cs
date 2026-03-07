@@ -34,11 +34,13 @@ public class FishingController : MonoBehaviour
     private FishingSpot _activeFishingSpot;
     private PlayerState m_currentPlayerState = PlayerState.CantFish;
     private bool m_interactPending;
+    private Canvas _playerCanvas;
 
     private void OnEnable()
     {
         model.material.color = Color.red;
         _playerCharacter.InteractPressed += OnInteract;
+        _playerCanvas = FindAnyObjectByType<Canvas>();
     }
 
     private void OnDisable()
@@ -140,7 +142,7 @@ public class FishingController : MonoBehaviour
         FishingSpot spot = _activeFishingSpot;
         _actions = FishingAction.Create(spot.context);
 
-        var uiController = Instantiate(spot.context.UIWidget);
+        var uiController = Instantiate(spot.context.UIWidget, _playerCanvas.transform);
         uiController.Initialise(spot, _actions);
 
         float elapsed = 0;
