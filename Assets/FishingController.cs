@@ -6,7 +6,11 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
-public class CharacterController : MonoBehaviour
+/**
+ * Fishing Controller is in charge of the player's interaction with fishing spots,
+ * owning the progression of the minigame and managing the UI
+ */
+public class FishingController : MonoBehaviour
 {
     public enum PlayerState
     {
@@ -16,8 +20,7 @@ public class CharacterController : MonoBehaviour
     }
 
     [Header("Debug")]
-    
-    [Tooltip("A MeshRenderer that acts as a debug way to show that the player is over a fishing spot")] 
+    [Tooltip("A MeshRenderer that acts as a debug way to show that the player is over a fishing spot")]
     [SerializeField]
     private MeshRenderer model;
 

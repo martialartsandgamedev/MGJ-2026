@@ -31,12 +31,12 @@ namespace Controllers
         {
             Debug.Log($"[FakeGameplay] Entered trigger of {other.name}");
 
-            CharacterController characterController;
+            FishingController fishingController;
 
-            if (other.TryGetComponent(out characterController))
+            if (other.TryGetComponent(out fishingController))
             {
                 Debug.Log("[FakeGameplay] Changing state to be able to fish");
-                characterController.SetActiveFishingSpot(this);
+                fishingController.SetActiveFishingSpot(this);
             }
         }
 
@@ -44,12 +44,12 @@ namespace Controllers
         {
             Debug.Log($"[FakeGameplay] Entered trigger of {other.name}");
 
-            CharacterController characterController;
+            FishingController fishingController;
 
-            if (other.TryGetComponent(out characterController))
+            if (other.TryGetComponent(out fishingController))
             {
                 Debug.Log("[FakeGameplay] Changing state to be unable to fish");
-                characterController.SetActiveFishingSpot(null);
+                fishingController.SetActiveFishingSpot(null);
             }
         }
 
