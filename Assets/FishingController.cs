@@ -41,7 +41,6 @@ public class FishingController : MonoBehaviour
     {
         model.material.color = Color.red;
         _playerCharacter.InteractPressed += OnInteract;
-        _playerCanvas = GetComponentInChildren<Canvas>();
     }
 
     private void OnDisable()

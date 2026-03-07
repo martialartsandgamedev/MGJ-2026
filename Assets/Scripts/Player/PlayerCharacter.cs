@@ -16,7 +16,7 @@ public class PlayerCharacter : MonoBehaviour, IControllable
     private Vector2 _aimVector;
     private Vector3 _velocity;
     private Vector2 _moveVector;
-    private FloatingUI floatingUI;
+    public FloatingUI floatingUI;
     public string ControllableID => m_id;
     public PlayerInputContext Inputs { get; private set; }
     public event Action InteractPressed;

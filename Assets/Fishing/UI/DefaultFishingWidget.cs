@@ -1,12 +1,17 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace Controllers
 {
     public class DefaultFishingWidget : MonoBehaviour
     {
-        public RectTransform actionUITemplate;
-        public RectTransform actionProgress;
+        public RectTransform actionTargetTemplate;
+        public RectTransform _backingContainer;
+        public RectTransform _actionContainer;
+    
+        public Image actionProgress;
 
         private Dictionary<int, RectTransform> _actionUI;
 
@@ -18,34 +23,55 @@ namespace Controllers
         {
             _boundSpot = spot;
 
-            _width = actionProgress.rect.width;
+            //_width = actionProgress.rect.width;
 
             _actionUI = new Dictionary<int, RectTransform>();
 
-            var parent = actionUITemplate.transform.parent;
+            var parent = actionTargetTemplate.transform.parent;
 
             foreach (var action in actions)
             {
-                var actionUI = GameObject.Instantiate(actionUITemplate, parent, true);
-                var normalisedWidth = (action.EndTime - action.StartTime);
-                var width = normalisedWidth * _width;
-                var position = (action.StartTime + (normalisedWidth / 2)) * _width;
+                //Figure out things for the UI
+                var actionUI = Instantiate(actionTargetTemplate, _actionContainer);
+                
+                var targetSizeNormalised = (action.EndTime - action.StartTime);
+                var position = (action.StartTime);
 
-                actionUI.anchoredPosition = new Vector2((float)position, actionUI.anchoredPosition.y);
-                actionUI.sizeDelta = new Vector2((float)width, actionUI.rect.height);
-                actionUI.name = action.Index.ToString();
-                actionUI.gameObject.SetActive(true);
+                actionUI.transform.localScale = Vector3.one * (float)targetSizeNormalised;
+            
+                // /var width = targetSizeNormalised * _width;
+              
+
+                //Apply it to the UI
+                // actionUI.anchoredPosition = new Vector2((float)position, actionUI.anchoredPosition.y);
+                //actionUI.sizeDelta = new Vector2((float)width, actionUI.rect.height);
+                //actionUI.name = action.Index.ToString();
+                //actionUI.gameObject.SetActive(true);
                 _actionUI[action.Index] = actionUI;
-                actionUI.SetSiblingIndex(action.Index);
+                //actionUI.SetSiblingIndex(action.Index);
+                
+                
+                //Spawn the action at a point on the normalise circle
+                
+                //Angle from normalised value
+                float angle = (float)position * Mathf.PI * 2f;
+                
+                //Coords on a circle
+                float x = Mathf.Sin(angle);
+                float z = Mathf.Cos(angle);
+                
+                //Add centre and radius
+                var positionOnCircle = Vector3.zero + new Vector3(x, z, 0 ) * _backingContainer.localScale.x;
+                actionUI.anchoredPosition = positionOnCircle;
             }
 
             SetProgress(0);
-            actionProgress.SetAsLastSibling();
+            //actionProgress.SetAsLastSibling();
         }
 
         public void SetProgress(float progress)
         {
-            actionProgress.sizeDelta = new Vector2(_width * progress, actionProgress.rect.height);
+            actionProgress.fillAmount = progress;
         }
 
         public void CompleteAction(int actionIndex)
