@@ -103,7 +103,7 @@ MonoBehaviour:
   m_Active: 1
   settings:
     passTag: DrawWater
-    Event: 500
+    Event: 450
     filterSettings:
       RenderQueueType: 0
       LayerMask:

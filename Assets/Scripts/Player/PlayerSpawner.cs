@@ -1,12 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class PlayerSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject m_playerPrefab;
     [SerializeField] private Transform[] m_spawnPoints;
+
+    [Header("Events")]
+    public UnityEvent<int> PlayerSpawned;
+    public UnityEvent<int> PlayerDespawned;
 
     [Header("Despawn")]
     [Tooltip("Seconds before a player is automatically despawned. Set to 0 to disable.")]
@@ -34,6 +39,9 @@ public class PlayerSpawner : MonoBehaviour
         var go = Instantiate(m_playerPrefab, spawnPoint.position, spawnPoint.rotation);
         var player = go.GetComponent<PlayerCharacter>();
         player.Init(index);
+        var floatingUI = player.GetComponentInChildren<FloatingUI>();
+        floatingUI.Init(devices);
+        floatingUI.ShowPrompt("direction", 5f);
 
         var slot = InputManager.ins.Register(player, devices);
 
@@ -43,6 +51,7 @@ public class PlayerSpawner : MonoBehaviour
 
         Coroutine coroutine = m_despawnDelay > 0f ? StartCoroutine(DespawnAfterDelay(player)) : null;
         m_active.Add((player, index, coroutine));
+        PlayerSpawned?.Invoke(index);
     }
 
     private IEnumerator DespawnNextFrame(PlayerCharacter player)
@@ -59,17 +68,21 @@ public class PlayerSpawner : MonoBehaviour
 
     private void DespawnPlayer(PlayerCharacter player)
     {
+        int despawnedIndex = -1;
         for (int i = m_active.Count - 1; i >= 0; i--)
         {
             if (m_active[i].player == player)
             {
                 if (m_active[i].coroutine != null)
                     StopCoroutine(m_active[i].coroutine);
+                despawnedIndex = m_active[i].index;
                 m_active.RemoveAt(i);
                 break;
             }
         }
 
+        if (despawnedIndex >= 0)
+            PlayerDespawned?.Invoke(despawnedIndex);
 
         if (player != null)
             Destroy(player.gameObject);
