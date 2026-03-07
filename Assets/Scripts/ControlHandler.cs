@@ -48,10 +48,10 @@ public class ControlHandler: MonoBehaviour
     
     public void ProcessIntent(PlayerInputContext ctx)
     {
-        if(ctx.Dash)
-        {
-            Debug.LogWarning($"I'm dashing");
-        }
+        // if(ctx.Dash)
+        // {
+        //     Debug.LogWarning($"I'm dashing");
+        // }
     }
 
 }

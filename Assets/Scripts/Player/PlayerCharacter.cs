@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,6 +18,7 @@ public class PlayerCharacter : MonoBehaviour, IControllable
     private FloatingUI floatingUI;
     public string ControllableID => m_id;
     public PlayerInputContext Inputs { get; private set; }
+    public event Action InteractPressed;
 
     public void Init(int playerIndex, InputDevice[] devices)
     {
@@ -60,5 +62,13 @@ public class PlayerCharacter : MonoBehaviour, IControllable
         m_controlHandler.ProcessIntent(ctx);
         _aimVector = ctx.MoveDirection;
         Inputs = ctx;
+    }
+
+    public void OnAction(PlayerAction action)
+    {
+        switch (action)
+        {
+            case PlayerAction.Interact: InteractPressed?.Invoke(); break;
+        }
     }
 }

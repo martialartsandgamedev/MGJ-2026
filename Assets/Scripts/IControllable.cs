@@ -5,4 +5,5 @@ public interface IControllable
     public ControlHandler ControlHandler { get; }
 
     public void AssertControlIntent(PlayerInputContext ctx);
+    public void OnAction(PlayerAction action);
 }

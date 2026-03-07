@@ -18,6 +18,8 @@ public class PlayerSlot
     private readonly Inputs m_inputs;
     private InputUser m_user;
     private PlayerInputContext m_intent;
+    private readonly Action<InputAction.CallbackContext> m_onInteract;
+    private readonly Action<InputAction.CallbackContext> m_onDash;
 
     public PlayerSlot(IControllable controllable, InputDevice[] devices)
     {
@@ -28,6 +30,9 @@ public class PlayerSlot
         foreach (var device in devices)
             m_user = InputUser.PerformPairingWithDevice(device, user: m_user);
 
+        m_onInteract = _ => Controllable.OnAction(PlayerAction.Interact);
+        m_onDash     = _ => Controllable.OnAction(PlayerAction.Dash);
+
         m_inputs = new Inputs();
         m_user.AssociateActionsWithUser(m_inputs);
         m_inputs.Player.Enable();
@@ -36,7 +41,8 @@ public class PlayerSlot
         m_inputs.Player.Sprint.canceled    += OnSprint;
         m_inputs.Player.Attack.started     += OnPrimaryAction;
         m_inputs.Player.Attack.canceled    += OnPrimaryAction;
-        m_inputs.Player.Interact.started   += OnInteract;
+        m_inputs.Player.Interact.started   += m_onInteract;
+       // m_inputs.Player.Dash.started       += m_onDash;
 
 #if UNITY_EDITOR
         m_debugDespawnAction = new InputAction("DebugDespawn", InputActionType.Button);
@@ -53,7 +59,8 @@ public class PlayerSlot
         m_inputs.Player.Sprint.canceled    -= OnSprint;
         m_inputs.Player.Attack.started     -= OnPrimaryAction;
         m_inputs.Player.Attack.canceled    -= OnPrimaryAction;
-        m_inputs.Player.Interact.started   -= OnInteract;
+        m_inputs.Player.Interact.started   -= m_onInteract;
+        //m_inputs.Player.Dash.started       -= m_onDash;
 
 #if UNITY_EDITOR
         m_debugDespawnAction.performed -= OnDebugDespawn;
@@ -94,7 +101,6 @@ public class PlayerSlot
         m_intent.MoveDirection = m_inputs.Player.Move.ReadValue<Vector2>();
         m_intent.CameraDelta   = m_inputs.Player.Look.ReadValue<Vector2>();
         Controllable.AssertControlIntent(m_intent);
-        m_intent.Interact = false;
     }
 
     private void OnSprint(InputAction.CallbackContext ctx)
@@ -104,5 +110,4 @@ public class PlayerSlot
     }
 
     private void OnPrimaryAction(InputAction.CallbackContext ctx) => m_intent.PrimaryAction = ctx.ReadValueAsButton();
-    private void OnInteract(InputAction.CallbackContext ctx)      => m_intent.Interact       = true;
 }

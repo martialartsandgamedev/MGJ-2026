@@ -33,10 +33,26 @@ public class FishingController : MonoBehaviour
     private List<FishingAction> _actions;
     private FishingSpot _activeFishingSpot;
     private PlayerState m_currentPlayerState = PlayerState.CantFish;
+    private bool m_interactPending;
 
     private void OnEnable()
     {
         model.material.color = Color.red;
+        _playerCharacter.InteractPressed += OnInteract;
+    }
+
+    private void OnDisable()
+    {
+        _playerCharacter.InteractPressed -= OnInteract;
+    }
+
+    private void OnInteract() => m_interactPending = true;
+
+    private bool ConsumeInteract()
+    {
+        var val = m_interactPending;
+        m_interactPending = false;
+        return val;
     }
 
     private void Update()
@@ -48,7 +64,7 @@ public class FishingController : MonoBehaviour
         }
 
         // Trigger the fishing attempt
-        if (m_currentPlayerState == PlayerState.CanFish && _activeFishingSpot && _playerCharacter.Inputs.Interact)
+        if (m_currentPlayerState == PlayerState.CanFish && _activeFishingSpot && ConsumeInteract())
         {
             Debug.Log("[FakeGameplay] Creating fishing controller");
             StartCoroutine(TryFishActive());
@@ -65,6 +81,7 @@ public class FishingController : MonoBehaviour
         else
         {
             spot.OnFishingSpotDepleted.AddListener(OnFishingSpotDepleted);
+            m_interactPending = false;
             SetState(PlayerState.CanFish);
         }
 
@@ -140,11 +157,12 @@ public class FishingController : MonoBehaviour
             var activeAction = GetActionInActiveWindow(elapsed);
 
             // If we are in an action window
-            if (_playerCharacter.Inputs.Interact && activeAction == null)
+            bool interacted = ConsumeInteract();
+            if (interacted && activeAction == null)
             {
                 Debug.Log("[FishingController] Failed to hit action");
             }
-            else if (_playerCharacter.Inputs.Interact && activeAction != null)
+            else if (interacted && activeAction != null)
             {
                 activeAction.Attempt = FishingAction.AttemptState.Success;
 

@@ -7,6 +7,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.Utilities;
 
+public enum PlayerAction { Interact, Dash }
+
 [Serializable]
 public struct PlayerInputContext
 {
@@ -14,20 +16,19 @@ public struct PlayerInputContext
     public Vector2 CameraDelta;
     public bool Crouch;
     public bool Sprint;
-    public bool Dash;
-    public bool Interact;
     public bool PrimaryAction;
 
-    public PlayerInputContext(Vector2 moveDirection, Vector2 cameraDelta, bool crouch = false, bool sprint = false, bool dash = false, bool interact = false, bool primaryAction = false)
+    public PlayerInputContext(Vector2 moveDirection, Vector2 cameraDelta, bool crouch = false, bool sprint = false, bool primaryAction = false, bool interact =  false)
     {
         MoveDirection = moveDirection;
         CameraDelta   = cameraDelta;
         Crouch        = crouch;
         Sprint        = sprint;
-        Dash          = dash;
-        Interact      = interact;
         PrimaryAction = primaryAction;
+        Interact = interact;
     }
+
+    public bool Interact { get; internal set; }
 }
 
 
