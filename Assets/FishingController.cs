@@ -209,7 +209,11 @@ public class FishingController : MonoBehaviour
             {
                 Debug.Log("[FishingController] Successfully hit all actions");
                 SetState(PlayerState.CanFish);
-                _activeFishingSpot.RemoveStock();
+
+                var fish = _activeFishingSpot.RemoveStock();
+
+                ScoreManager.ins?.ReportCatch(_playerCharacter.PlayerIndex, fish);
+               
                 _activeFishingSpot = null;
                 Destroy(_uiController.gameObject);
                 yield break;
