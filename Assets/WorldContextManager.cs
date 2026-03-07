@@ -1,6 +1,7 @@
 using Controllers;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -17,7 +18,7 @@ public class WorldContextManager : MonoBehaviour
     private float _fishSpawnTimer = 0f;
 
     [SerializeField]
-    private float _spawnWeight = -1;
+    private float _spawnWeight = 0;
 
     private Vector3 _randomPoint;
 
@@ -62,37 +63,20 @@ public class WorldContextManager : MonoBehaviour
     // }
     
     //0 - Equal - -1 favours uncommon - 1 favors common
-    FishingSpotDefinition GetWeightedSpotDefinition(float bias)
+    List<FishingSpotDefinition> GetDefinitions(float time)
     {
-        float totalWeight = 0;
+        if (time > 200) return _fishingSpotDefinitions.Where(x=>x.Table[0].Rarity <= FishRarity.Unique).ToList();
+        if (time > 90) return _fishingSpotDefinitions.Where(x=>x.Table[0].Rarity <= FishRarity.Gold).ToList();
+        if (time > 30) return _fishingSpotDefinitions.Where(x=>x.Table[0].Rarity <= FishRarity.Silver).ToList();
 
-        foreach (var definition in _fishingSpotDefinitions)
-        {
-            totalWeight += Mathf.Pow((float)definition.Table[0].Rarity, bias);   
-        }
-        
-
-        float roll = UnityEngine.Random.value * totalWeight;
-
-        foreach (var definition in _fishingSpotDefinitions)
-        {
-            roll -=  Mathf.Pow((float)definition.Table[0].Rarity, bias);
-
-            if (roll <= 0)
-            {
-                return definition; 
-            }
-               
-        }
-
-        return _fishingSpotDefinitions[0];
+        return _fishingSpotDefinitions.Where(x=>x.Table[0].Rarity <= FishRarity.Bronze).ToList();
     }
 
     public IEnumerator ManageFishSpawns()
     {
         while (true)
         {
-            _spawnWeight = Mathf.Clamp(_spawnWeight + Time.deltaTime/100, -1, 10); 
+            _spawnWeight = Mathf.Clamp(_spawnWeight + Time.deltaTime, 0, 300); 
             
             //Spawn fishing spots
             if (_activeFishingSpots.Count <_maxFishingSpots)
@@ -116,14 +100,16 @@ public class WorldContextManager : MonoBehaviour
                         _fishingSpotInstance.transform.position = _randomPoint;
 
                         //Pick a definiton
-                        FishingSpotDefinition definition = GetWeightedSpotDefinition(-1);
+                        var definitions = GetDefinitions(_spawnWeight);
+                        FishingSpotDefinition definition = GetDefinitions(_spawnWeight)[Random.Range(0, definitions.Count)];
                         
                         //Reset the spawn timer on rare spawn
                         if ((int)definition.Table[0].Rarity >= 3)
                         {
-                            _spawnWeight = -1;
                            WorldContextEvents.Ins.RareFishSpawned.Invoke(definition.Table[0]);
+                           _spawnWeight = 0;
                         }
+                        
                         _activeFishingSpots.Add(_fishingSpotInstance);
                         
                         //Base it on rarity
