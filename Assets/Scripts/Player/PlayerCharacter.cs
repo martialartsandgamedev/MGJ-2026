@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/**
+ * Player Character is in charge of driving the movement of the player based on incoming inputs from IControllable
+ */
 public class PlayerCharacter : MonoBehaviour, IControllable
 {
     [SerializeField] private ControlHandler m_controlHandler;
