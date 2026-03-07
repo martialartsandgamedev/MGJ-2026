@@ -71,7 +71,7 @@ public class CharacterController : MonoBehaviour
         Debug.Log("[FakeGameplay] Setting state to " + Enum.GetName(typeof(PlayerState), m_currentPlayerState));
 
         m_currentPlayerState = playerState;
-        statusText.text = StateStrings[m_currentPlayerState];
+        if (statusText) statusText.text = StateStrings[m_currentPlayerState];
         switch (playerState)
         {
             case PlayerState.CantFish:
