@@ -10,7 +10,7 @@ public class FishingSpotContext
     public int ActionCount;
     public float Duration;
     public double Buffer;
-    public DefaultFishingWidget UIWidget { get; set; }
+    public DefaultFishingWidget UIWidget;
     public List<FishDefinition> Table { get; set; }
     
     public ParticleSystem ParticleSystemTemplate;

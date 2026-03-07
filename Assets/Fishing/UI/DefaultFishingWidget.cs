@@ -37,7 +37,7 @@ namespace Controllers
                 var targetSizeNormalised = (action.EndTime - action.StartTime);
                 var position = (action.StartTime);
 
-                actionUI.transform.localScale = Vector3.one * (float)targetSizeNormalised;
+                actionUI.transform.localScale = Vector3.one * ((float)targetSizeNormalised * 8);
             
                 // /var width = targetSizeNormalised * _width;
               
@@ -61,7 +61,7 @@ namespace Controllers
                 float z = Mathf.Cos(angle);
                 
                 //Add centre and radius
-                var positionOnCircle = Vector3.zero + new Vector3(x, z, 0 ) * _backingContainer.localScale.x;
+                var positionOnCircle = Vector3.zero + new Vector3(x, z, 0 ) * 0.8f * _backingContainer.localScale.x/2;
                 actionUI.anchoredPosition = positionOnCircle;
             }
 

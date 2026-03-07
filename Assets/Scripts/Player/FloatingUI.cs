@@ -52,10 +52,14 @@ public class FloatingUI : MonoBehaviour
         RefreshPrompt();
     }
 
-    private void LateUpdate()
+    private void Update()
     {
-        if (Camera.main == null) return;
-        transform.rotation = Camera.main.transform.rotation;
+        if (Camera.main == null)
+        {
+            return;
+        }
+        
+        transform.forward = Camera.main.transform.forward;
     }
 
     public void ShowPrompt(string actionId, float duration = 0f)

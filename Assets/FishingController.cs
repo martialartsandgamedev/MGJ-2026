@@ -33,8 +33,11 @@ public class FishingController : MonoBehaviour
     private FishingSpot _activeFishingSpot;
     private PlayerState m_currentPlayerState = PlayerState.CantFish;
     private bool m_interactPending;
-    private Canvas _playerCanvas;
+    
+    public Canvas _playerCanvas;
+    
     private DefaultFishingWidget _uiController;
+    
     private Coroutine _fishingCoroutine;
 
     private void OnEnable()

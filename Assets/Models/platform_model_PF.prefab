@@ -63,6 +63,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a215eca8dd72e634cb9940e5436cea81, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4585857637310474232}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a215eca8dd72e634cb9940e5436cea81, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6299634050946801040}
   m_SourcePrefab: {fileID: 100100000, guid: a215eca8dd72e634cb9940e5436cea81, type: 3}
 --- !u!1 &7061911018109232351 stripped
 GameObject:
@@ -85,3 +88,24 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: -0.187, y: -1.072, z: -0.013}
   m_TimeToStationary: 0.5
+--- !u!65 &6299634050946801040
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7061911018109232351}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 6.2452316, y: 2.509841, z: 6.6495914}
+  m_Center: {x: -0.18689644, y: -1.0718551, z: -0.012856126}
