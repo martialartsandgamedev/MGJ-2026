@@ -37,7 +37,7 @@ namespace Controllers
                 var targetSizeNormalised = (action.EndTime - action.StartTime);
                 var position = (action.StartTime);
 
-                actionUI.transform.localScale = Vector3.one * ((float)targetSizeNormalised * 8);
+                actionUI.transform.localScale = Vector3.one;
             
                 // /var width = targetSizeNormalised * _width;
               

@@ -75,6 +75,8 @@ namespace Controllers
             {
                 Debug.Log("[FakeGameplay] Changing state to be able to fish");
                 fishingController.SetCanFishSpot(this, true);
+                
+                fishingController._playerCanvas.ShowPrompt("fish",0);
             }
         }
 
@@ -88,6 +90,8 @@ namespace Controllers
             {
                 Debug.Log("[FakeGameplay] Changing state to be unable to fish");
                 fishingController.SetCanFishSpot(this, false);
+                
+                fishingController._playerCanvas.HidePrompt();
             }
         }
 

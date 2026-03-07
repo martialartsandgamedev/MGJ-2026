@@ -41,8 +41,7 @@ public class FloatingUI : MonoBehaviour
 
     private void Start()
     {
-        if (Camera.main != null)
-            transform.rotation = Camera.main.transform.rotation;
+        transform.forward = Camera.main.transform.forward;
     }
 
     /// <summary>Call once after the player's input devices are assigned.</summary>
@@ -54,12 +53,7 @@ public class FloatingUI : MonoBehaviour
 
     private void Update()
     {
-        if (Camera.main == null)
-        {
-            return;
-        }
-        
-        transform.forward = Camera.main.transform.forward;
+       
     }
 
     public void ShowPrompt(string actionId, float duration = 0f)
