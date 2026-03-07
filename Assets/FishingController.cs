@@ -144,7 +144,6 @@ public class FishingController : MonoBehaviour
             // If we are in an action window
             if (activeAction != null)
             {
-                Debug.Log($"[FakeGameplay] Action {activeAction.Index} is still active");
                 // TODO: Use player input
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
