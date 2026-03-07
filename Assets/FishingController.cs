@@ -49,7 +49,7 @@ public class FishingController : MonoBehaviour
 
         // Trigger the fishing attempt
         // TODO: Use player input noob
-        if (m_currentPlayerState == PlayerState.CanFish && _activeFishingSpot && _playerCharacter.Inputs.Interact)
+        if (m_currentPlayerState == PlayerState.CanFish && _activeFishingSpot && Input.GetKeyDown(KeyCode.Space))
         {
             Debug.Log("[FakeGameplay] Creating fishing controller");
             StartCoroutine(TryFishActive());
