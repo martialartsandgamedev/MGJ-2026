@@ -85,8 +85,7 @@ public class FishingController : MonoBehaviour
             return;
         }
 
-        Debug.Log("[FakeGameplay] Setting state to " + Enum.GetName(typeof(PlayerState), m_currentPlayerState));
-
+        Debug.Log("[FakeGameplay] Setting state to " + Enum.GetName(typeof(PlayerState), playerState));
         m_currentPlayerState = playerState;
         if (statusText) statusText.text = StateStrings[m_currentPlayerState];
         switch (playerState)
