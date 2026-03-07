@@ -70,7 +70,6 @@ public class FishingController : MonoBehaviour
         if (m_currentPlayerState == PlayerState.CanFish && _fishableSpots.Any() && ConsumeInteract())
         {
             Debug.Log("[FakeGameplay] Creating fishing controller");
-            _activeFishingSpot = _fishableSpots.First();
             _fishingCoroutine = StartCoroutine(TryFishActive());
         }
     }
@@ -94,7 +93,7 @@ public class FishingController : MonoBehaviour
             _fishableSpots.Remove(spot);
         }
 
-        // If we are fishing and our spot has been restricted to us, stop all fishing activites and cleanup UI
+        // If we are fishing and our spot has been restricted to us, stop all fishing activities and cleanup UI
         if (!canFish && _activeFishingSpot == spot)
         {
             _activeFishingSpot.OnFishingSpotDepleted.RemoveListener(OnFishingSpotDepleted);
@@ -166,6 +165,8 @@ public class FishingController : MonoBehaviour
 
     private IEnumerator TryFishActive()
     {
+        _activeFishingSpot = _fishableSpots.First();
+        _activeFishingSpot.OnFishingSpotDepleted.AddListener(OnFishingSpotDepleted);
         SetState(PlayerState.IsFishing);
 
         FishingSpot spot = _activeFishingSpot;
