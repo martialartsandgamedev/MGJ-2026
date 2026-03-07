@@ -120,6 +120,7 @@ public class FishingController : MonoBehaviour
 
     private void OnFishingSpotDepleted()
     {
+        _fishableSpots.Remove(_activeFishingSpot);
         _activeFishingSpot = null;
         SetState(PlayerState.CantFish);
     }
@@ -209,6 +210,7 @@ public class FishingController : MonoBehaviour
                 Debug.Log("[FishingController] Successfully hit all actions");
                 SetState(PlayerState.CanFish);
                 _activeFishingSpot.RemoveStock();
+                _activeFishingSpot = null;
                 Destroy(_uiController.gameObject);
                 yield break;
             }
