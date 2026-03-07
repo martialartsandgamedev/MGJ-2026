@@ -161,7 +161,6 @@ MonoBehaviour:
   m_controlHandler: {fileID: 5399179832755318703}
   currentSpeed: 0
   movementSettings: {fileID: 11400000, guid: 5d025664dd6feaa4aa9a8aa09cdf631a, type: 2}
-  _fishingController: {fileID: 885727420326924937}
 --- !u!114 &885727420326924937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,6 +173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdc424f32a530ac4ba350e99b7aa2ca9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerCharacter: {fileID: 5881543272508015996}
   model: {fileID: 4287191925961380336}
   statusText: {fileID: 0}
 --- !u!114 &5399179832755318703
