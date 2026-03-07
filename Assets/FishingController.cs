@@ -67,19 +67,37 @@ public class FishingController : MonoBehaviour
         }
 
         // Trigger the fishing attempt
-        if (m_currentPlayerState == PlayerState.CanFish && _activeFishingSpot && ConsumeInteract())
+        if (m_currentPlayerState == PlayerState.CanFish && _fishableSpots.Any() && ConsumeInteract())
         {
             Debug.Log("[FakeGameplay] Creating fishing controller");
+            _activeFishingSpot = _fishableSpots.First();
             _fishingCoroutine = StartCoroutine(TryFishActive());
         }
     }
 
-    public void SetActiveFishingSpot(FishingSpot spot)
+    private void LateUpdate()
     {
-        if (spot == null)
+        m_interactPending = false;
+    }
+
+    private readonly HashSet<FishingSpot> _fishableSpots = new();
+
+    // Tell this fishing controller whether if can or cannot fish from a spot
+    public void SetCanFishSpot(FishingSpot spot, bool canFish)
+    {
+        if (canFish)
+        {
+            _fishableSpots.Add(spot);
+        }
+        else
+        {
+            _fishableSpots.Remove(spot);
+        }
+
+        // If we are fishing and our spot has been restricted to us, stop all fishing activites and cleanup UI
+        if (!canFish && _activeFishingSpot == spot)
         {
             _activeFishingSpot.OnFishingSpotDepleted.RemoveListener(OnFishingSpotDepleted);
-            SetState(PlayerState.CantFish);
             if (_fishingCoroutine != null)
             {
                 StopCoroutine(_fishingCoroutine);
@@ -89,15 +107,16 @@ public class FishingController : MonoBehaviour
             {
                 Destroy(_uiController.gameObject);
             }
-        }
-        else
-        {
-            spot.OnFishingSpotDepleted.AddListener(OnFishingSpotDepleted);
-            m_interactPending = false;
-            SetState(PlayerState.CanFish);
+
+            _activeFishingSpot = null;
+            SetState(_fishableSpots.Any() ? PlayerState.CanFish : PlayerState.CantFish);
         }
 
-        _activeFishingSpot = spot;
+        // Determine if we can start fishing
+        if (m_currentPlayerState != PlayerState.IsFishing)
+        {
+            SetState(_fishableSpots.Any() ? PlayerState.CanFish : PlayerState.CantFish);
+        }
     }
 
     private void OnFishingSpotDepleted()

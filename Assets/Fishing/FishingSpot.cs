@@ -19,7 +19,6 @@ namespace Controllers
         public FishingSpotContext context;
         public UnityEvent OnFishingSpotDepleted;
 
-
         private List<FishingAction> _actions;
         private ParticleSystem _particleSystemInstance;
         private float _elapsed;
@@ -76,7 +75,7 @@ namespace Controllers
             if (other.TryGetComponent(out fishingController))
             {
                 Debug.Log("[FakeGameplay] Changing state to be able to fish");
-                fishingController.SetActiveFishingSpot(this);
+                fishingController.SetCanFishSpot(this, true);
             }
         }
 
@@ -89,7 +88,7 @@ namespace Controllers
             if (other.TryGetComponent(out fishingController))
             {
                 Debug.Log("[FakeGameplay] Changing state to be unable to fish");
-                fishingController.SetActiveFishingSpot(null);
+                fishingController.SetCanFishSpot(this, false);
             }
         }
 
@@ -112,122 +111,5 @@ namespace Controllers
         {
             return context.Table[Random.Range(0, context.Table.Count)].GetFromDefinition();
         }
-
-        // private void Update()
-        // {
-        //     if (CurrentState != State.InProgress)
-        //     {
-        //         return;
-        //     }
-        //
-        //     _elapsed += Time.deltaTime / spotDefinition.Duration;
-        //     
-        //     uiController.SetProgress((float)_elapsed);
-        //     
-        //     if (_elapsed >= 1.0)
-        //     {
-        //         _elapsed -= 1.0;
-        //         return;
-        //     }
-        //
-        //     // /_elapsed = Mathf.Repeat(_elapsed + Time.deltaTime / spotDefinition.Duration, 1f);
-        //
-        //     if (!Input.GetKeyDown(KeyCode.Space)) return;
-        //
-        //     var activeAction = GetActionInActiveWindow();
-        //
-        //     if (activeAction != null)
-        //     {
-        //         activeAction.Attempt = FishingAction.AttemptState.Success;
-        //         uiController.CompleteAction(activeAction.Index);
-        //         Debug.Log($"[FishingController] Successfully hit action {activeAction.Index}");
-        //         if (_actions.All(action => action.Attempt == FishingAction.AttemptState.Success))
-        //         {
-        //             SetState(State.Complete);
-        //             uiController.SetProgress(1.0f);
-        //             Debug.Log("[FishingController] Successfully hit all actions");
-        //         }
-        //     }
-        //     else
-        //     {
-        //         Debug.Log("[FishingController] Failed to hit action");
-        //     }
-        // }
-
-        // public void StartFishing(CharacterController controller)
-        // {
-        //     // if (CurrentFishingSpotState != FishingSpotState.InProgress)
-        //     // {
-        //         //SetState(FishingSpotState.InProgress);
-        //     //}
-        // }
-
-        // private void SetState(FishingSpotState fishingSpotState)
-        // {
-        //     if (fishingSpotState == CurrentFishingSpotState)
-        //     {
-        //         return;
-        //     }
-        //
-        //     Debug.Log($"[FishingController] Setting state to {Enum.GetName(typeof(FishingSpotState), fishingSpotState)}");
-        //    
-        //     CurrentFishingSpotState = fishingSpotState;
-        //     
-        //     onStateChanged.Invoke(CurrentFishingSpotState);
-        // }
-
-        // private FishingAction GetActionInActiveWindow()
-        // {
-        //     return _actions.FirstOrDefault(action =>
-        //         action.Attempt == FishingAction.AttemptState.Upcoming &&
-        //         _elapsed >= action.StartTime &&
-        //         _elapsed <= action.EndTime);
-        // }
-
-        // Some pretend time before kicking off the minigame
-        // private IEnumerator DoFishing(CharacterController controller)
-        // {
-        //     // /SetState(FishingSpotState.InProgress);
-        //
-        //     while (CurrentFishingSpotState == FishingSpotState.InProgress)
-        //     {
-        //         //Check for actions
-        //         var activeAction = GetActionInActiveWindow();
-        //
-        //         if (activeAction != null)
-        //         {
-        //             activeAction.Attempt = FishingAction.AttemptState.Success;
-        //
-        //             uiController.CompleteAction(activeAction.Index);
-        //
-        //             Debug.Log($"[FishingController] Successfully hit action {activeAction.Index}");
-        //         }
-        //         else
-        //         {
-        //             Debug.Log("[FishingController] Failed to hit action");
-        //         }
-        //
-        //         //All the actions were complete
-        //         if (_actions.All(action => action.Attempt == FishingAction.AttemptState.Success))
-        //         {
-        //             SetState(FishingSpotState.Complete);
-        //             uiController.SetProgress(1.0f);
-        //
-        //             Debug.Log("[FishingController] Successfully hit all actions");
-        //         }
-        //
-        //         if (_elapsed >= 1.0)
-        //         {
-        //             _elapsed -= 1.0;
-        //         }
-        //
-        //         _elapsed += Time.deltaTime / spotDefinition.Duration;
-        //         uiController.SetProgress((float)_elapsed);
-        //
-        //         yield return null;
-        //     }
-        //
-        //
-        // }
     }
 }
