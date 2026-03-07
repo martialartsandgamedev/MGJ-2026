@@ -20,7 +20,7 @@ public class FishingController : MonoBehaviour
     }
 
     [SerializeField] private PlayerCharacter _playerCharacter;
-    
+
     [Header("Debug")]
     [Tooltip("A MeshRenderer that acts as a debug way to show that the player is over a fishing spot")]
     [SerializeField]
@@ -29,7 +29,7 @@ public class FishingController : MonoBehaviour
     [Tooltip("Optional TMP Text that displays the players current state")] 
     [SerializeField]
     private TextMeshProUGUI statusText;
-    
+
     private List<FishingAction> _actions;
     private FishingSpot _activeFishingSpot;
     private PlayerState m_currentPlayerState = PlayerState.CantFish;
@@ -48,8 +48,7 @@ public class FishingController : MonoBehaviour
         }
 
         // Trigger the fishing attempt
-        // TODO: Use player input noob
-        if (m_currentPlayerState == PlayerState.CanFish && _activeFishingSpot && Input.GetKeyDown(KeyCode.Space))
+        if (m_currentPlayerState == PlayerState.CanFish && _activeFishingSpot && _playerCharacter.Inputs.Interact)
         {
             Debug.Log("[FakeGameplay] Creating fishing controller");
             StartCoroutine(TryFishActive());
@@ -141,21 +140,17 @@ public class FishingController : MonoBehaviour
             var activeAction = GetActionInActiveWindow(elapsed);
 
             // If we are in an action window
-            if (activeAction != null)
+            if (_playerCharacter.Inputs.Interact && activeAction == null)
             {
-                // TODO: Use player input
-                if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    activeAction.Attempt = FishingAction.AttemptState.Success;
+                Debug.Log("[FishingController] Failed to hit action");
+            }
+            else if (_playerCharacter.Inputs.Interact && activeAction != null)
+            {
+                activeAction.Attempt = FishingAction.AttemptState.Success;
 
-                    uiController.CompleteAction(activeAction.Index);
+                uiController.CompleteAction(activeAction.Index);
 
-                    Debug.Log($"[FishingController] Successfully hit action {activeAction.Index}");
-                }
-                else
-                {
-                    Debug.Log("[FishingController] Failed to hit action");
-                }
+                Debug.Log($"[FishingController] Successfully hit action {activeAction.Index}");
             }
 
             // Check if all actions have now been completed
