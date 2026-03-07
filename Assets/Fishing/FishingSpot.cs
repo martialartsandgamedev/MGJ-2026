@@ -11,8 +11,7 @@ namespace Controllers
 {
     public class FishingSpot : MonoBehaviour
     {
-        [FormerlySerializedAs("settings")] [SerializeField]
-        private FishingSpotDefinition spotDefinition;
+        // private FishingSpotDefinition spotDefinition;
 
         [SerializeField] private SplineAnimate _splineAnimate = null;
 
@@ -23,14 +22,14 @@ namespace Controllers
         private ParticleSystem _particleSystemInstance;
         private float _elapsed;
 
-        private void OnEnable()
-        {
-            BindContext();
-            SyncContext();
-        }
+        // private void OnEnable()
+        // {
+        //     BindContext();
+        //     SyncContext();
+        // }
 
         //[Button]
-        private void BindContext()
+        public void BindContext(FishingSpotDefinition spotDefinition)
         {
             context = new FishingSpotContext(spotDefinition);
 
