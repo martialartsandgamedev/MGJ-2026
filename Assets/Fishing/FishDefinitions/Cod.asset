@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Cod
   m_EditorClassIdentifier: 
   ID: Cod
-  SizeRange: {x: 1, y: 5}
+  SizeRange: {x: 4, y: 8}
   Rarity: 0

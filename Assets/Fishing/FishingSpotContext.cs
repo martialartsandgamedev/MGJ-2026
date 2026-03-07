@@ -2,6 +2,7 @@
 using Controllers;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 [Serializable]
 public class FishingSpotContext
 {
@@ -11,6 +12,11 @@ public class FishingSpotContext
     public double Buffer;
     public DefaultFishingWidget UIWidget { get; set; }
     public List<FishDefinition> Table { get; set; }
+    
+    public ParticleSystem ParticleSystemTemplate;
+    
+    public bool FollowsPath = false;
+    
     public FishingSpotContext(FishingSpotDefinition definition)
     {
         RemainingFish = definition.Capacity;
@@ -19,5 +25,7 @@ public class FishingSpotContext
         Buffer = definition.Buffer;
         UIWidget = definition.UIWidget;
         Table = definition.Table;
+        ParticleSystemTemplate = definition.ParticleSystemTemplate;
+        FollowsPath = definition.FollowsPath;
     }
 }

@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public enum FishRarity { Bronze, Silver, Gold }
+public enum FishRarity { Bronze, Silver, Gold, Unique }
 public enum FishSize {Small, Medium, Large, Gargantuan}
 
 
@@ -13,6 +13,7 @@ public class FishDefinition : ScriptableObject
     public string ID = "Fish";
     
     public Vector2Int SizeRange;
+    
     public FishRarity Rarity;
     
     // [Button]

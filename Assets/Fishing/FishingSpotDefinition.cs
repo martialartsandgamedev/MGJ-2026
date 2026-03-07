@@ -8,7 +8,9 @@ namespace Controllers
     {
         public List<FishDefinition> Table;
         public DefaultFishingWidget UIWidget;
-
+        
+        public ParticleSystem ParticleSystemTemplate;
+        
         public string ID = "Fishing Spot Default";
         
         public float Duration;
@@ -16,5 +18,7 @@ namespace Controllers
         public double Buffer;
 
         public int Capacity = 5;
+
+        public bool FollowsPath = false;
     }
 }
