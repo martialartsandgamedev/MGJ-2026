@@ -681,6 +681,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: -16.67
       objectReference: {fileID: 0}
+    - target: {fileID: 2466254643017298052, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
+      propertyPath: spotDefinition
+      value: 
+      objectReference: {fileID: 11400000, guid: 6c4f404fe65ab3b4199d8151f75254cf, type: 2}
     - target: {fileID: 6394094129358398805, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -725,6 +729,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fishing_spots
       objectReference: {fileID: 0}
+    - target: {fileID: 9092131852912834748, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
+      propertyPath: spotDefinition
+      value: 
+      objectReference: {fileID: 11400000, guid: 6e2035125b2ead14bb307a8accafc3f1, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
