@@ -12,6 +12,7 @@ public class PlayerCharacter : MonoBehaviour, IControllable
     [SerializeField] private MovementSettings movementSettings;
 
     private string m_id;
+    public int PlayerIndex { get; private set; }
     private Vector2 _aimVector;
     private Vector3 _velocity;
     private Vector2 _moveVector;
@@ -29,6 +30,7 @@ public class PlayerCharacter : MonoBehaviour, IControllable
 
     public void Init(int playerIndex, InputDevice[] devices)
     {
+        PlayerIndex = playerIndex;
         m_id = $"Player {playerIndex + 1}";
         gameObject.name = m_id;
 

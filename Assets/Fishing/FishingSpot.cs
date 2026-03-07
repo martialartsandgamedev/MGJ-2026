@@ -92,9 +92,10 @@ namespace Controllers
             }
         }
 
-        public void RemoveStock()
+        public Fish RemoveStock()
         {
             Debug.LogFormat("[FishingSpot] Removing stock from {0}", name);
+            var fish = GetFishFromTable();
             context.RemainingFish -= 1;
             SyncContext();
             if (context.RemainingFish <= 0)
@@ -103,11 +104,10 @@ namespace Controllers
                 OnFishingSpotDepleted.Invoke();
                 Destroy(gameObject);
             }
+            return fish;
         }
 
-        // Method to test fish generation
-        //[Button]
-        private Fish GetFishFromTable()
+        public Fish GetFishFromTable()
         {
             return context.Table[Random.Range(0, context.Table.Count)].GetFromDefinition();
         }
