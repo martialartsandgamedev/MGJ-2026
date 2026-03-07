@@ -1,39 +1,72 @@
-using Sirenix.OdinInspector;
-using System;
-using System.Collections;
+// using Sirenix.OdinInspector;
+
 using System.Collections.Generic;
-using System.Linq;
-using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
+using UnityEngine.Splines;
 using Random = UnityEngine.Random;
 
 namespace Controllers
 {
     public class FishingSpot : MonoBehaviour
     {
-        [FormerlySerializedAs("settings")]
-        [SerializeField] private FishingSpotDefinition spotDefinition;
+        [FormerlySerializedAs("settings")] [SerializeField]
+        private FishingSpotDefinition spotDefinition;
+
+        [SerializeField] private SplineAnimate _splineAnimate = null;
 
         public FishingSpotContext context;
         public UnityEvent OnFishingSpotDepleted;
 
-        private float _elapsed;
-        
+
         private List<FishingAction> _actions;
-        
+        private ParticleSystem _particleSystemInstance;
+        private float _elapsed;
+
         private void OnEnable()
         {
             BindContext();
+            SyncContext();
         }
 
         //[Button]
         private void BindContext()
         {
             context = new FishingSpotContext(spotDefinition);
+
+            if (_particleSystemInstance != null)
+            {
+                DestroyImmediate(_particleSystemInstance.gameObject);
+            }
+
+            _particleSystemInstance = Instantiate(context.ParticleSystemTemplate, transform);
+
+            if (context.FollowsPath)
+            {
+                _splineAnimate.Container = GameObject.FindWithTag("UniqueFishSpline").GetComponent<SplineContainer>();
+            }
         }
-        
+
+        // [Button]
+        public void SyncContext()
+        {
+            var main = _particleSystemInstance.main;
+            main.maxParticles = (int)context.RemainingFish;
+
+            var primaryFishable = context.Table[0];
+            main.startSize =
+                new ParticleSystem.MinMaxCurve(primaryFishable.SizeRange.x * 5f, primaryFishable.SizeRange.y * 5f);
+
+            _particleSystemInstance.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            _particleSystemInstance.Play();
+
+            if (context.FollowsPath)
+            {
+                _splineAnimate.Play();
+            }
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             Debug.Log($"[FakeGameplay] Entered trigger of {other.name}");
@@ -45,7 +78,6 @@ namespace Controllers
                 Debug.Log("[FakeGameplay] Changing state to be able to fish");
                 fishingController.SetActiveFishingSpot(this);
             }
-        
         }
 
         private void OnTriggerExit(Collider other)
@@ -79,7 +111,7 @@ namespace Controllers
         {
             return context.Table[Random.Range(0, context.Table.Count)].GetFromDefinition();
         }
-        
+
         // private void Update()
         // {
         //     if (CurrentState != State.InProgress)
@@ -150,7 +182,7 @@ namespace Controllers
         //         _elapsed >= action.StartTime &&
         //         _elapsed <= action.EndTime);
         // }
-        
+
         // Some pretend time before kicking off the minigame
         // private IEnumerator DoFishing(CharacterController controller)
         // {
