@@ -662,8 +662,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _radius: 50
   _fishSpawnInterval: 5
-  _spawnWeight: -1
-  _maxFishingSpots: 20
+  _spawnWeight: 0
+  _maxFishingSpots: 5
   _fishingSpotTemplate: {fileID: 1274392994525669149, guid: 635b8b388aefd8b44b9b64cf982c4859, type: 3}
   _fishingSpotDefinitions:
   - {fileID: 11400000, guid: 80e3bce333fa27b48b9f4779c736e291, type: 2}
