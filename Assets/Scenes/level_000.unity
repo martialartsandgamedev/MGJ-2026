@@ -474,7 +474,7 @@ MonoBehaviour:
   _sprites:
   - {fileID: -1327416188, guid: 1058416794f1a3f4ab1361ece26a8491, type: 3}
   - {fileID: -620581537, guid: 1058416794f1a3f4ab1361ece26a8491, type: 3}
-  _speechBubble: {fileID: 1746056777}
+  _speechBubble: {fileID: 1746056778}
   _fishInfoText: {fileID: 870539183}
   _corner: 1
   _slideTime: 0.2
@@ -1315,9 +1315,9 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7dbc5993076164542a7ac5afdef033a2, type: 3}
---- !u!1 &1746056777 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6152418064723363067, guid: 7dbc5993076164542a7ac5afdef033a2, type: 3}
+--- !u!224 &1746056778 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7402597368847339136, guid: 7dbc5993076164542a7ac5afdef033a2, type: 3}
   m_PrefabInstance: {fileID: 1636946819}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1799167752
