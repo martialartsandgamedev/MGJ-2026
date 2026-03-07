@@ -6,20 +6,20 @@ using UnityEngine.InputSystem;
 
 public class PlayerSpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject m_playerPrefab;
+    [SerializeField] private PlayerCharacter m_playerPrefab;
     [SerializeField] private Transform[] m_spawnPoints;
 
-    [Header("Events")]
-    public UnityEvent<int> PlayerSpawned;
+    [Header("Events")] public UnityEvent<int> PlayerSpawned;
     public UnityEvent<int> PlayerDespawned;
 
     [Header("Despawn")]
     [Tooltip("Seconds before a player is automatically despawned. Set to 0 to disable.")]
-    [SerializeField] private float m_despawnDelay = 180f;
+    [SerializeField]
+    private float m_despawnDelay = 180f;
 
     private readonly List<(PlayerCharacter player, int index, Coroutine coroutine)> m_active = new();
 
-    private void OnEnable()  => InputManager.ins.PlayerJoinRequestEvent.AddListener(OnJoinRequest);
+    private void OnEnable() => InputManager.ins.PlayerJoinRequestEvent.AddListener(OnJoinRequest);
     private void OnDisable() => InputManager.ins.PlayerJoinRequestEvent.RemoveListener(OnJoinRequest);
 
     private int GetNextAvailableIndex()
@@ -36,21 +36,20 @@ public class PlayerSpawner : MonoBehaviour
             ? m_spawnPoints[index % m_spawnPoints.Length]
             : transform;
 
-        var go = Instantiate(m_playerPrefab, spawnPoint.position, spawnPoint.rotation);
-        var player = go.GetComponent<PlayerCharacter>();
-        player.Init(index);
-        var floatingUI = player.GetComponentInChildren<FloatingUI>();
+        var playerInstance = Instantiate(m_playerPrefab, spawnPoint.position, spawnPoint.rotation);
+        playerInstance.Init(index);
+        var floatingUI = playerInstance.GetComponentInChildren<FloatingUI>();
         floatingUI.Init(devices);
         floatingUI.ShowPrompt("direction", 5f);
 
-        var slot = InputManager.ins.Register(player, devices);
+        var slot = InputManager.ins.Register(playerInstance, devices);
 
 #if UNITY_EDITOR
-        slot.DebugDespawnPressed += () => StartCoroutine(DespawnNextFrame(player));
+        slot.DebugDespawnPressed += () => StartCoroutine(DespawnNextFrame(playerInstance));
 #endif
 
-        Coroutine coroutine = m_despawnDelay > 0f ? StartCoroutine(DespawnAfterDelay(player)) : null;
-        m_active.Add((player, index, coroutine));
+        Coroutine coroutine = m_despawnDelay > 0f ? StartCoroutine(DespawnAfterDelay(playerInstance)) : null;
+        m_active.Add((playerInstance, index, coroutine));
         PlayerSpawned?.Invoke(index);
     }
 

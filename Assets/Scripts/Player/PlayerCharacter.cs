@@ -8,7 +8,7 @@ public class PlayerCharacter : MonoBehaviour, IControllable
     [SerializeField] private ControlHandler m_controlHandler;
     [SerializeField] private float currentSpeed;
     [SerializeField] private MovementSettings movementSettings;
-
+    
     private string m_id;
     private Vector2 _aimVector;
     private Vector3 _velocity;
@@ -47,12 +47,19 @@ public class PlayerCharacter : MonoBehaviour, IControllable
         Gizmos.color = Color.yellow;
         Gizmos.DrawSphere(moveVector, 1f);
     }
+    
+    public PlayerInputContext Inputs { get; private set; }
 
     public void AssertControlIntent(PlayerInputContext ctx)
     {
+        if (ctx.Interact)
+        {
+            Debug.Log("WE ACTIONING");
+        }
         if (ctx.MoveDirection.magnitude > 0.1f)
             Debug.Log($"{m_id} moving: {ctx.MoveDirection}");
         m_controlHandler.ProcessIntent(ctx);
+        Inputs = ctx;
         _aimVector = ctx.MoveDirection;
     }
 }

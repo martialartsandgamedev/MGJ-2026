@@ -31,12 +31,12 @@ public class PlayerSlot
         m_inputs = new Inputs();
         m_user.AssociateActionsWithUser(m_inputs);
         m_inputs.Player.Enable();
-
         m_inputs.Player.Sprint.started     += OnSprint;
         m_inputs.Player.Sprint.canceled    += OnSprint;
         m_inputs.Player.Attack.started     += OnPrimaryAction;
         m_inputs.Player.Attack.canceled    += OnPrimaryAction;
         m_inputs.Player.Interact.started   += OnInteract;
+        m_inputs.Player.Interact.performed += OnInteract;
         m_inputs.Player.Interact.canceled  += OnInteract;
 
 #if UNITY_EDITOR
@@ -55,6 +55,7 @@ public class PlayerSlot
         m_inputs.Player.Attack.started     -= OnPrimaryAction;
         m_inputs.Player.Attack.canceled    -= OnPrimaryAction;
         m_inputs.Player.Interact.started   -= OnInteract;
+        m_inputs.Player.Interact.performed -= OnInteract;
         m_inputs.Player.Interact.canceled  -= OnInteract;
 
 #if UNITY_EDITOR
@@ -105,5 +106,5 @@ public class PlayerSlot
     }
 
     private void OnPrimaryAction(InputAction.CallbackContext ctx) => m_intent.PrimaryAction = ctx.ReadValueAsButton();
-    private void OnInteract(InputAction.CallbackContext ctx)      => m_intent.Interact       = ctx.ReadValueAsButton();
+    private void OnInteract(InputAction.CallbackContext ctx)      => m_intent.Interact       = ctx.started;
 }
