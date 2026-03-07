@@ -37,7 +37,6 @@ public class PlayerSlot
         m_inputs.Player.Attack.started     += OnPrimaryAction;
         m_inputs.Player.Attack.canceled    += OnPrimaryAction;
         m_inputs.Player.Interact.started   += OnInteract;
-        m_inputs.Player.Interact.canceled  += OnInteract;
 
 #if UNITY_EDITOR
         m_debugDespawnAction = new InputAction("DebugDespawn", InputActionType.Button);
@@ -55,7 +54,6 @@ public class PlayerSlot
         m_inputs.Player.Attack.started     -= OnPrimaryAction;
         m_inputs.Player.Attack.canceled    -= OnPrimaryAction;
         m_inputs.Player.Interact.started   -= OnInteract;
-        m_inputs.Player.Interact.canceled  -= OnInteract;
 
 #if UNITY_EDITOR
         m_debugDespawnAction.performed -= OnDebugDespawn;
@@ -96,6 +94,7 @@ public class PlayerSlot
         m_intent.MoveDirection = m_inputs.Player.Move.ReadValue<Vector2>();
         m_intent.CameraDelta   = m_inputs.Player.Look.ReadValue<Vector2>();
         Controllable.AssertControlIntent(m_intent);
+        m_intent.Interact = false;
     }
 
     private void OnSprint(InputAction.CallbackContext ctx)
@@ -105,5 +104,5 @@ public class PlayerSlot
     }
 
     private void OnPrimaryAction(InputAction.CallbackContext ctx) => m_intent.PrimaryAction = ctx.ReadValueAsButton();
-    private void OnInteract(InputAction.CallbackContext ctx)      => m_intent.Interact       = ctx.ReadValueAsButton();
+    private void OnInteract(InputAction.CallbackContext ctx)      => m_intent.Interact       = true;
 }

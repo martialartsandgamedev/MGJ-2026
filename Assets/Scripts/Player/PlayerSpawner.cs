@@ -38,10 +38,7 @@ public class PlayerSpawner : MonoBehaviour
 
         var go = Instantiate(m_playerPrefab, spawnPoint.position, spawnPoint.rotation);
         var player = go.GetComponent<PlayerCharacter>();
-        player.Init(index);
-        var floatingUI = player.GetComponentInChildren<FloatingUI>();
-        floatingUI.Init(devices);
-        floatingUI.ShowPrompt("direction", 5f);
+        player.Init(index, devices);
 
         var slot = InputManager.ins.Register(player, devices);
 
