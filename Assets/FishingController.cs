@@ -26,19 +26,22 @@ public class FishingController : MonoBehaviour
     [SerializeField]
     private MeshRenderer model;
 
-    [Tooltip("Optional TMP Text that displays the players current state")] 
-    [SerializeField]
+    [Tooltip("Optional TMP Text that displays the players current state")] [SerializeField]
     private TextMeshProUGUI statusText;
 
     private List<FishingAction> _actions;
     private FishingSpot _activeFishingSpot;
     private PlayerState m_currentPlayerState = PlayerState.CantFish;
     private bool m_interactPending;
+    private Canvas _playerCanvas;
+    private DefaultFishingWidget _uiController;
+    private Coroutine _fishingCoroutine;
 
     private void OnEnable()
     {
         model.material.color = Color.red;
         _playerCharacter.InteractPressed += OnInteract;
+        _playerCanvas = FindAnyObjectByType<Canvas>();
     }
 
     private void OnDisable()
@@ -67,7 +70,7 @@ public class FishingController : MonoBehaviour
         if (m_currentPlayerState == PlayerState.CanFish && _activeFishingSpot && ConsumeInteract())
         {
             Debug.Log("[FakeGameplay] Creating fishing controller");
-            StartCoroutine(TryFishActive());
+            _fishingCoroutine = StartCoroutine(TryFishActive());
         }
     }
 
@@ -77,6 +80,15 @@ public class FishingController : MonoBehaviour
         {
             _activeFishingSpot.OnFishingSpotDepleted.RemoveListener(OnFishingSpotDepleted);
             SetState(PlayerState.CantFish);
+            if (_fishingCoroutine != null)
+            {
+                StopCoroutine(_fishingCoroutine);
+            }
+
+            if (_uiController)
+            {
+                Destroy(_uiController.gameObject);
+            }
         }
         else
         {
@@ -140,8 +152,8 @@ public class FishingController : MonoBehaviour
         FishingSpot spot = _activeFishingSpot;
         _actions = FishingAction.Create(spot.context);
 
-        var uiController = Instantiate(spot.context.UIWidget);
-        uiController.Initialise(spot, _actions);
+        _uiController = Instantiate(spot.context.UIWidget, _playerCanvas.transform);
+        _uiController.Initialise(spot, _actions);
 
         float elapsed = 0;
 
@@ -166,7 +178,7 @@ public class FishingController : MonoBehaviour
             {
                 activeAction.Attempt = FishingAction.AttemptState.Success;
 
-                uiController.CompleteAction(activeAction.Index);
+                _uiController.CompleteAction(activeAction.Index);
 
                 Debug.Log($"[FishingController] Successfully hit action {activeAction.Index}");
             }
@@ -174,16 +186,15 @@ public class FishingController : MonoBehaviour
             // Check if all actions have now been completed
             if (_actions.All(action => action.Attempt == FishingAction.AttemptState.Success))
             {
-                uiController.SetProgress(1.0f);
                 Debug.Log("[FishingController] Successfully hit all actions");
                 SetState(PlayerState.CanFish);
                 _activeFishingSpot.RemoveStock();
-                Destroy(uiController.gameObject);
+                Destroy(_uiController.gameObject);
                 yield break;
             }
 
             elapsed += Time.deltaTime / spot.context.Duration;
-            uiController.SetProgress(elapsed);
+            _uiController.SetProgress(elapsed);
 
             // Loop the elapsed timer
             if (elapsed >= 1.0f)

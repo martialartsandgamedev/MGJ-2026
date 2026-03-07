@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Table:
   - {fileID: 11400000, guid: 485111d2ffe470f449f6af234ad359f3, type: 2}
-  UIWidget: {fileID: 4283985421995395790, guid: 24a15605467db5c4083cb667fe9f27f8, type: 3}
+  UIWidget: {fileID: 6483302063537903939, guid: 5c3793ed1a25970448965a4fe6c52bbb, type: 3}
   ParticleSystemTemplate: {fileID: 3015003670060149531, guid: 821ad57510e5c5348a94057c594832ff, type: 3}
   ID: Dense Cod Fishing Spot
   Duration: 4

@@ -20,6 +20,13 @@ public class PlayerCharacter : MonoBehaviour, IControllable
     public PlayerInputContext Inputs { get; private set; }
     public event Action InteractPressed;
 
+    private Rigidbody _rb;
+
+    private void Awake()
+    {
+        _rb = GetComponent<Rigidbody>();
+    }
+
     public void Init(int playerIndex, InputDevice[] devices)
     {
         m_id = $"Player {playerIndex + 1}";
@@ -36,13 +43,17 @@ public class PlayerCharacter : MonoBehaviour, IControllable
 
     private void FixedUpdate()
     {
+        // Convert from units/sec to units/frame to preserve existing tuning
+        _velocity = _rb.linearVelocity * Time.fixedDeltaTime;
+
         var dragReduction = _aimVector.magnitude <= 0.1f ? movementSettings.DragStrength * Time.fixedDeltaTime : 0;
         var draggedVelocity = Vector3.MoveTowards(_velocity, Vector3.zero, dragReduction);
         var updatedVelocity = Vector3.MoveTowards(draggedVelocity,
             new Vector3(_aimVector.x, 0, _aimVector.y),
             movementSettings.Acceleration * Time.fixedDeltaTime);
         _velocity = Vector3.ClampMagnitude(updatedVelocity, movementSettings.MaxSpeed);
-        transform.position += _velocity;
+
+        _rb.linearVelocity = _velocity / Time.fixedDeltaTime;
         currentSpeed = _velocity.magnitude;
     }
 
