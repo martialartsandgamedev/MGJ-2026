@@ -16,6 +16,7 @@ public class PlayerCharacter : MonoBehaviour, IControllable
     private Vector2 _moveVector;
     private FloatingUI floatingUI;
     public string ControllableID => m_id;
+    public PlayerInputContext Inputs { get; private set; }
 
     public void Init(int playerIndex, InputDevice[] devices)
     {
@@ -58,5 +59,6 @@ public class PlayerCharacter : MonoBehaviour, IControllable
     {
         m_controlHandler.ProcessIntent(ctx);
         _aimVector = ctx.MoveDirection;
+        Inputs = ctx;
     }
 }
