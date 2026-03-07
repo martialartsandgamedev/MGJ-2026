@@ -56,8 +56,6 @@ public class PlayerCharacter : MonoBehaviour, IControllable
 
     public void AssertControlIntent(PlayerInputContext ctx)
     {
-        if (ctx.MoveDirection.magnitude > 0.1f)
-            Debug.Log($"{m_id} moving: {ctx.MoveDirection}");
         m_controlHandler.ProcessIntent(ctx);
         _aimVector = ctx.MoveDirection;
     }
