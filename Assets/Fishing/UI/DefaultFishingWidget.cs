@@ -3,22 +3,30 @@ using UnityEngine;
 
 namespace Controllers
 {
-    public class DefaultFishingUIController : MonoBehaviour
+    public class DefaultFishingWidget : MonoBehaviour
     {
-        [SerializeField] public RectTransform actionUITemplate;
-        [SerializeField] public RectTransform actionProgress;
+        public RectTransform actionUITemplate;
+        public RectTransform actionProgress;
+
         private Dictionary<int, RectTransform> _actionUI;
+
         private float _width;
 
-        public void Initialise(IEnumerable<FishingAction> actions)
+        private FishingSpot _boundSpot;
+
+        public void Initialise(FishingSpot spot, IEnumerable<FishingAction> actions)
         {
+            _boundSpot = spot;
+
             _width = actionProgress.rect.width;
 
             _actionUI = new Dictionary<int, RectTransform>();
+
             var parent = actionUITemplate.transform.parent;
+
             foreach (var action in actions)
             {
-                var actionUI = Instantiate(actionUITemplate, parent, true);
+                var actionUI = GameObject.Instantiate(actionUITemplate, parent, true);
                 var normalisedWidth = (action.EndTime - action.StartTime);
                 var width = normalisedWidth * _width;
                 var position = (action.StartTime + (normalisedWidth / 2)) * _width;

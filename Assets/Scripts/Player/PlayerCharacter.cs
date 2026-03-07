@@ -1,12 +1,13 @@
 using UnityEngine;
 
+/**
+ * Player Character is in charge of driving the movement of the player based on incoming inputs from IControllable
+ */
 public class PlayerCharacter : MonoBehaviour, IControllable
 {
     [SerializeField] private ControlHandler m_controlHandler;
-    [SerializeField] private float maxSpeed;
-    [SerializeField] private float dragStrength;
-    [SerializeField] private float acceleration;
     [SerializeField] private float currentSpeed;
+    [SerializeField] private MovementSettings movementSettings;
 
     private string m_id;
     private Vector2 _aimVector;
@@ -26,18 +27,19 @@ public class PlayerCharacter : MonoBehaviour, IControllable
 
     private void FixedUpdate()
     {
-        var dragReduction = dragStrength * Time.fixedDeltaTime;
+        var dragReduction = _aimVector.magnitude <= 0.1f ? movementSettings.DragStrength * Time.fixedDeltaTime : 0;
         var draggedVelocity = Vector3.MoveTowards(_velocity, Vector3.zero, dragReduction);
         var updatedVelocity = Vector3.MoveTowards(draggedVelocity,
             new Vector3(_aimVector.x, 0, _aimVector.y),
-            acceleration * Time.fixedDeltaTime);
-        _velocity = Vector3.ClampMagnitude(updatedVelocity, maxSpeed);
+            movementSettings.Acceleration * Time.fixedDeltaTime);
+        _velocity = Vector3.ClampMagnitude(updatedVelocity, movementSettings.MaxSpeed);
         transform.position += _velocity;
+        currentSpeed = _velocity.magnitude;
     }
 
     private void OnDrawGizmos()
     {
-        var aimPosition = transform.position + new Vector3(_aimVector.x, 0, _aimVector.y) * maxSpeed;
+        var aimPosition = transform.position + new Vector3(_aimVector.x, 0, _aimVector.y) * movementSettings.MaxSpeed;
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(aimPosition, 1f);
 
