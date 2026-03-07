@@ -1,5 +1,9 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
+/**
+ * Player Character is in charge of driving the movement of the player based on incoming inputs from IControllable
+ */
 public class PlayerCharacter : MonoBehaviour, IControllable
 {
     [SerializeField] private ControlHandler m_controlHandler;
@@ -10,12 +14,18 @@ public class PlayerCharacter : MonoBehaviour, IControllable
     private Vector2 _aimVector;
     private Vector3 _velocity;
     private Vector2 _moveVector;
+    private FloatingUI floatingUI;
     public string ControllableID => m_id;
+    public PlayerInputContext Inputs { get; private set; }
 
-    public void Init(int playerIndex)
+    public void Init(int playerIndex, InputDevice[] devices)
     {
         m_id = $"Player {playerIndex + 1}";
         gameObject.name = m_id;
+
+        floatingUI = GetComponentInChildren<FloatingUI>();
+        floatingUI.Init(devices);
+        floatingUI.ShowPrompt("direction", 5f);
     }
 
     public ControlHandler ControlHandler => m_controlHandler;
@@ -47,9 +57,8 @@ public class PlayerCharacter : MonoBehaviour, IControllable
 
     public void AssertControlIntent(PlayerInputContext ctx)
     {
-        if (ctx.MoveDirection.magnitude > 0.1f)
-            Debug.Log($"{m_id} moving: {ctx.MoveDirection}");
         m_controlHandler.ProcessIntent(ctx);
         _aimVector = ctx.MoveDirection;
+        Inputs = ctx;
     }
 }
