@@ -15,9 +15,15 @@ public class CharacterController : MonoBehaviour
         IsFishing,
     }
 
-    [SerializeField] private float speed = 5f;
-    [SerializeField] private MeshRenderer model;
-    [SerializeField] private TextMeshProUGUI statusText;
+    [Header("Debug")]
+    
+    [Tooltip("A MeshRenderer that acts as a debug way to show that the player is over a fishing spot")] 
+    [SerializeField]
+    private MeshRenderer model;
+
+    [Tooltip("Optional TMP Text that displays the players current state")] 
+    [SerializeField]
+    private TextMeshProUGUI statusText;
 
     private List<FishingAction> _actions;
     private FishingSpot _activeFishingSpot;
@@ -34,16 +40,6 @@ public class CharacterController : MonoBehaviour
         if (m_currentPlayerState == PlayerState.IsFishing)
         {
             return;
-        }
-
-        // Pretend movement to test trigger zones
-        if (Input.GetKey(KeyCode.A))
-        {
-            transform.Translate(Vector3.left * (speed * Time.deltaTime));
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            transform.Translate(Vector3.right * (speed * Time.deltaTime));
         }
 
         // Trigger the fishing attempt
