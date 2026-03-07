@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8326475522316553546}
   - component: {fileID: 1274392994525669149}
   - component: {fileID: 2818592111184711077}
+  - component: {fileID: 2537263225341275163}
   m_Layer: 0
   m_Name: fishing_spot
   m_TagString: Untagged
@@ -68,6 +69,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spotDefinition: {fileID: 11400000, guid: 80e3bce333fa27b48b9f4779c736e291, type: 2}
+  _splineAnimate: {fileID: 2818592111184711077}
   context:
     RemainingFish: 5
     ActionCount: 2
@@ -75,7 +77,9 @@ MonoBehaviour:
     Buffer: 0.25
     ParticleSystemTemplate: {fileID: 3015003670060149531, guid: 821ad57510e5c5348a94057c594832ff, type: 3}
     FollowsPath: 0
-  _splineAnimate: {fileID: 2818592111184711077}
+  OnFishingSpotDepleted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &2818592111184711077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99,3 +103,19 @@ MonoBehaviour:
   m_ObjectForwardAxis: 2
   m_ObjectUpAxis: 1
   m_StartOffset: 0
+--- !u!208 &2537263225341275163
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5740196240356004815}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 3, y: 0.5, z: 3}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
