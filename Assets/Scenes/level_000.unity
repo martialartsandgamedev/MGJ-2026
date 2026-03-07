@@ -119,6 +119,79 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &21765088
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2160158953990849507, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 15.62
+      objectReference: {fileID: 0}
+    - target: {fileID: 2257313336914737743, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -17.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2466254643017298052, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
+      propertyPath: spotDefinition
+      value: 
+      objectReference: {fileID: 11400000, guid: 84c8af0b446d58848a8db4f949eba183, type: 2}
+    - target: {fileID: 6394094129358398805, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394094129358398805, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394094129358398805, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394094129358398805, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394094129358398805, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394094129358398805, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394094129358398805, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394094129358398805, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394094129358398805, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394094129358398805, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7870626983809210106, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
+      propertyPath: m_Name
+      value: fishing_spots
+      objectReference: {fileID: 0}
+    - target: {fileID: 9092131852912834748, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
+      propertyPath: spotDefinition
+      value: 
+      objectReference: {fileID: 11400000, guid: 6e2035125b2ead14bb307a8accafc3f1, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3510154a8f6068a4f80bc4ad7d0afbfc, type: 3}
 --- !u!1 &36656783 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 155355639153482801, guid: eb1d535b90ae2b74a8b059b8eb164f7e, type: 3}
@@ -1494,3 +1567,4 @@ SceneRoots:
   - {fileID: 864821197}
   - {fileID: 96903894}
   - {fileID: 1710320641}
+  - {fileID: 21765088}
