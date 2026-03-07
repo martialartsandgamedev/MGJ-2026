@@ -3,27 +3,27 @@ using UnityEngine;
 
 namespace Controllers
 {
-    public class DefaultFishingWidget:MonoBehaviour
+    public class DefaultFishingWidget : MonoBehaviour
     {
         public RectTransform actionUITemplate;
         public RectTransform actionProgress;
-        
+
         private Dictionary<int, RectTransform> _actionUI;
-        
+
         private float _width;
 
         private FishingSpot _boundSpot;
-        
+
         public void Initialise(FishingSpot spot, IEnumerable<FishingAction> actions)
         {
             _boundSpot = spot;
-            
+
             _width = actionProgress.rect.width;
 
             _actionUI = new Dictionary<int, RectTransform>();
-            
+
             var parent = actionUITemplate.transform.parent;
-            
+
             foreach (var action in actions)
             {
                 var actionUI = GameObject.Instantiate(actionUITemplate, parent, true);
