@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Sirenix.OdinInspector;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace Controllers
 {
@@ -12,8 +15,8 @@ namespace Controllers
     {
         [FormerlySerializedAs("settings")]
         [SerializeField] private FishingSpotDefinition spotDefinition;
-        
-        public FishingSpotContext context = null;
+
+        public FishingSpotContext context;
         
         private float _elapsed;
         
@@ -21,15 +24,14 @@ namespace Controllers
         
         private void OnEnable()
         {
-            // Hookup inputs
-            // _actions = FishingAction.Create(spotDefinition);
-            // uiController.Initialise(_actions);
-            //SetState(FishingSpotState.ReadyToStart);
+            BindContext();
+        }
 
-            //Create a new instance context from its definition
+        //[Button]
+        private void BindContext()
+        {
             context = new FishingSpotContext(spotDefinition);
         }
-        
         
         private void OnTriggerEnter(Collider other)
         {
@@ -58,6 +60,12 @@ namespace Controllers
                 characterController.SetState(CharacterController.PlayerState.CantFish);
                 characterController.ActiveFishingSpot = null;
             }
+        }
+
+        //[Button]
+        private Fish GetFishFromTable()
+        {
+            return context.Table[Random.Range(0, context.Table.Count)].GetFromDefinition();
         }
         
         // private void Update()
