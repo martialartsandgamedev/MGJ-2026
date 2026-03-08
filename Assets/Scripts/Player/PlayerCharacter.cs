@@ -95,7 +95,7 @@ public class PlayerCharacter : MonoBehaviour, IControllable
             }
 
             var boostSpeed = boostSettings.SpeedCurve.Evaluate(Mathf.Clamp01(_boostProgress / boostSettings.Duration));
-            _velocity *= boostSpeed;
+            _velocity += new Vector3(_aimVector.x, 0, _aimVector.y) * (boostSpeed * Time.fixedDeltaTime);
         }
 
         if (_timeUntilBoost > 0f)
