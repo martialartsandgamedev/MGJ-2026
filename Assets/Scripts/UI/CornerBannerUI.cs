@@ -20,6 +20,10 @@ public class CornerBannerUI : MonoBehaviour
     [SerializeField] private LeanTweenType _easeIn = LeanTweenType.easeOutBack;
     [SerializeField] private LeanTweenType _easeOut = LeanTweenType.easeInBack;
 
+    [Header("Fish Catch Filter")]
+    [SerializeField] private float _fishCatchShowChance = 0.2f;
+    [SerializeField] private float _fishCatchGuaranteeTime = 7.5f;
+
     [Header("Puns")]
     [SerializeField] private float _punInterval = 10f;
     [SerializeField] private string[] _puns = {
@@ -39,6 +43,7 @@ public class CornerBannerUI : MonoBehaviour
     private Vector2 _offScreenPos;
     private int _slideTween = -1;
     private Coroutine _sequenceCoroutine;
+    private float _lastBannerTime = float.NegativeInfinity;
 
     private readonly Queue<(int playerIndex, Fish fish, int earned, PlayerScore score)> _queue = new();
     private readonly Queue<string> _textQueue = new();
@@ -94,9 +99,11 @@ public class CornerBannerUI : MonoBehaviour
 
     private void OnFishCaught(int playerIndex, Fish fish, int earned, PlayerScore score)
     {
+        bool guaranteed = Time.time - _lastBannerTime >= _fishCatchGuaranteeTime;
+        if (!guaranteed && Random.value > _fishCatchShowChance) return;
+
         _queue.Enqueue((playerIndex, fish, earned, score));
-        if (_sequenceCoroutine == null)
-            _sequenceCoroutine = StartCoroutine(ProcessQueue());
+        _sequenceCoroutine ??= StartCoroutine(ProcessQueue());
     }
 
     /// <summary>Call this to trigger the banner to show with current fish data.</summary>
@@ -154,6 +161,7 @@ public class CornerBannerUI : MonoBehaviour
 
     private IEnumerator BannerSequence(string overrideText = null)
     {
+        _lastBannerTime = Time.time;
         SetupRandomSide();
 
         // Cancel any running slide tween
