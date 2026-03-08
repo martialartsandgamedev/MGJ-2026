@@ -37,8 +37,8 @@ RectTransform:
   - {fileID: 7202170314684322747}
   m_Father: {fileID: 4669916512722133931}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.094241284}
+  m_AnchorMin: {x: 0, y: 0.90305287}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0}
@@ -189,6 +189,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Slot2
       objectReference: {fileID: 0}
+    - target: {fileID: 5174098870090267854, guid: 4fc1c32271a37c14da3dd0ec60ef4624, type: 3}
+      propertyPath: m_fontSize
+      value: 57.35
+      objectReference: {fileID: 0}
     - target: {fileID: 7829998157908278587, guid: 4fc1c32271a37c14da3dd0ec60ef4624, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -287,7 +291,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8714175322136292553, guid: 4fc1c32271a37c14da3dd0ec60ef4624, type: 3}
       propertyPath: m_fontSize
-      value: 88.05
+      value: 57.35
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -338,6 +342,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Slot3
       objectReference: {fileID: 0}
+    - target: {fileID: 5174098870090267854, guid: 4fc1c32271a37c14da3dd0ec60ef4624, type: 3}
+      propertyPath: m_fontSize
+      value: 57.35
+      objectReference: {fileID: 0}
     - target: {fileID: 7829998157908278587, guid: 4fc1c32271a37c14da3dd0ec60ef4624, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -436,7 +444,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8714175322136292553, guid: 4fc1c32271a37c14da3dd0ec60ef4624, type: 3}
       propertyPath: m_fontSize
-      value: 88.05
+      value: 57.35
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -487,6 +495,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Slot1
       objectReference: {fileID: 0}
+    - target: {fileID: 5174098870090267854, guid: 4fc1c32271a37c14da3dd0ec60ef4624, type: 3}
+      propertyPath: m_fontSize
+      value: 57.35
+      objectReference: {fileID: 0}
     - target: {fileID: 7829998157908278587, guid: 4fc1c32271a37c14da3dd0ec60ef4624, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -585,7 +597,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8714175322136292553, guid: 4fc1c32271a37c14da3dd0ec60ef4624, type: 3}
       propertyPath: m_fontSize
-      value: 88.05
+      value: 57.35
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -635,6 +647,10 @@ PrefabInstance:
     - target: {fileID: 4319090388526951881, guid: 4fc1c32271a37c14da3dd0ec60ef4624, type: 3}
       propertyPath: m_Name
       value: Slot0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5174098870090267854, guid: 4fc1c32271a37c14da3dd0ec60ef4624, type: 3}
+      propertyPath: m_fontSize
+      value: 57.35
       objectReference: {fileID: 0}
     - target: {fileID: 7829998157908278587, guid: 4fc1c32271a37c14da3dd0ec60ef4624, type: 3}
       propertyPath: m_Pivot.x
@@ -734,7 +750,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8714175322136292553, guid: 4fc1c32271a37c14da3dd0ec60ef4624, type: 3}
       propertyPath: m_fontSize
-      value: 88.05
+      value: 57.35
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
