@@ -33,9 +33,9 @@ public class PlayerSlotUI : MonoBehaviour
         if (_playerNameText != null)
             _playerNameText.text = playerName;
         if (_bankedScoreText != null)
-            _bankedScoreText.text = "0 pts banked";
+            _bankedScoreText.text = "Bank: 0 points";
         if (_heldText != null)
-            _heldText.text = "0 held";
+            _heldText.text = "Held: 0";
     }
 
     public void UpdateInventory(PlayerInventory inventory)
@@ -44,7 +44,7 @@ public class PlayerSlotUI : MonoBehaviour
             _playerNameText.text = _playerName;
         if (_bankedScoreText != null)
         {
-            _bankedScoreText.text = $"{inventory.BankedScore} pts banked";
+            _bankedScoreText.text = $"Bank: {inventory.BankedScore} points";
 
             if (inventory.BankedScore > _lastBankedScore)
             {
@@ -59,7 +59,7 @@ public class PlayerSlotUI : MonoBehaviour
 
         if (_heldText != null)
         {
-            _heldText.text = $"{inventory.HeldCount} held ({inventory.HeldScore} pts)";
+            _heldText.text = $"Held: {inventory.HeldCount}";
 
             if (inventory.HeldCount < _lastHeldCount)
             {
