@@ -19,6 +19,6 @@ MonoBehaviour:
   ID: Dense Cod Fishing Spot
   Duration: 2
   ActionCount: 3
-  Buffer: 0.55
+  Buffer: 0.2
   Capacity: 3
   FollowsPath: 0

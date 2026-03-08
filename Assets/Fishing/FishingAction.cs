@@ -25,8 +25,8 @@ namespace Controllers
             return Enumerable.Range(0, context.ActionCount).Select(index =>
             {
                 var targetTime = context.Duration / (context.ActionCount + 1) * (index + 1);
-                var startTime = targetTime - context.Buffer;
-                var endTime = targetTime + context.Buffer;
+                var startTime = targetTime - context.Buffer / 2;
+                var endTime = targetTime + context.Buffer / 2;
                 var normalisedStartTime = startTime / context.Duration;
                 var normalisedEndTime = endTime / context.Duration;
 

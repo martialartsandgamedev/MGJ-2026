@@ -19,6 +19,6 @@ MonoBehaviour:
   ID: Unique Megamouth Spot
   Duration: 2
   ActionCount: 4
-  Buffer: 0.55
+  Buffer: 0.2
   Capacity: 1
   FollowsPath: 1
