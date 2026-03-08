@@ -13,6 +13,9 @@ public class PlayerInventory : MonoBehaviour
     /// <summary>Fired whenever held fish or banked score changes. Args: playerIndex, this inventory.</summary>
     public static event Action<int, PlayerInventory> OnInventoryChanged;
 
+    /// <summary>Fired when a successful bank occurs. Args: player name, amount just banked.</summary>
+    public static event Action<string, int> OnBanked;
+
     public int PlayerIndex { get; private set; }
 
     public IReadOnlyList<Fish> HeldFish => _heldFish;
@@ -71,11 +74,14 @@ public class PlayerInventory : MonoBehaviour
     {
         if (_heldFish.Count == 0) return;
 
+        int amountBanked = 0;
         foreach (var fish in _heldFish)
-            BankedScore += ScoreManager.CalculateFishScore(fish);
+            amountBanked += ScoreManager.CalculateFishScore(fish);
+        BankedScore += amountBanked;
 
         _heldFish.Clear();
         OnInventoryChanged?.Invoke(PlayerIndex, this);
+        OnBanked?.Invoke(_character.ControllableID, amountBanked);
     }
 
     /// <summary>

@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class CornerBannerUI : MonoBehaviour
 {
-    public enum Corner { BottomLeft, BottomRight, TopLeft, TopRight }
-
     [SerializeField] private RectTransform _bannerRect;
     [SerializeField] private Image _bannerImage;
     [SerializeField] private Sprite[] _sprites;
@@ -15,10 +13,10 @@ public class CornerBannerUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _fishInfoText;
 
     [Header("Settings")]
-    [SerializeField] private Corner _corner = Corner.BottomRight;
     [SerializeField] private float _slideTime = 0.4f;
     [SerializeField] private float _displayDuration = 3f;
     [SerializeField] private float _spriteSwapInterval = 0.5f;
+    [SerializeField] private float _yBuffer = 200f;
     [SerializeField] private LeanTweenType _easeIn = LeanTweenType.easeOutBack;
     [SerializeField] private LeanTweenType _easeOut = LeanTweenType.easeInBack;
 
@@ -28,6 +26,7 @@ public class CornerBannerUI : MonoBehaviour
     private Coroutine _sequenceCoroutine;
 
     private readonly Queue<(int playerIndex, Fish fish, int earned, PlayerScore score)> _queue = new();
+    private readonly Queue<string> _textQueue = new();
 
     public Fish LastCaughtFish { get; private set; }
     public int LastPlayerIndex { get; private set; }
@@ -37,30 +36,33 @@ public class CornerBannerUI : MonoBehaviour
     private void Awake()
     {
         Canvas.ForceUpdateCanvases();
-        _bannerRect.localRotation = Quaternion.Euler(0f, 0f, GetRotationAngle());
-        _onScreenPos = GetOnScreenAnchoredPos();
-        _offScreenPos = GetOffScreenAnchoredPos();
-        _bannerRect.anchoredPosition = _offScreenPos;
+        // Start hidden off the right side; position will be randomized per-sequence
+        var canvasRect = _bannerRect.GetComponentInParent<Canvas>().GetComponent<RectTransform>();
+        float halfW = canvasRect.rect.width * 0.5f;
+        _bannerRect.anchoredPosition = new Vector2(halfW + _bannerRect.rect.width, 0f);
         if (_speechBubble != null)
-        {
             _speechBubble.gameObject.SetActive(false);
-            // Counter-rotate so the bubble is axis-aligned with the screen
-            _speechBubble.localRotation = Quaternion.Euler(0f, 0f, -GetRotationAngle());
-            // Reposition in banner local space so it appears along the correct screen edge
-            _speechBubble.anchoredPosition = GetBubbleLocalPos();
-        }
     }
 
     private void OnEnable()
     {
         if (ScoreManager.ins != null)
             ScoreManager.ins.OnFishCaught += OnFishCaught;
+        PlayerInventory.OnBanked += OnBanked;
     }
 
     private void OnDisable()
     {
         if (ScoreManager.ins != null)
             ScoreManager.ins.OnFishCaught -= OnFishCaught;
+        PlayerInventory.OnBanked -= OnBanked;
+    }
+
+    private void OnBanked(string playerName, int amount)
+    {
+        _textQueue.Enqueue($"{playerName} banked\n+{amount} pts!");
+        if (_sequenceCoroutine == null)
+            _sequenceCoroutine = StartCoroutine(ProcessQueue());
     }
 
     private void OnFishCaught(int playerIndex, Fish fish, int earned, PlayerScore score)
@@ -80,20 +82,53 @@ public class CornerBannerUI : MonoBehaviour
 
     private IEnumerator ProcessQueue()
     {
-        while (_queue.Count > 0)
+        while (_queue.Count > 0 || _textQueue.Count > 0)
         {
-            var entry = _queue.Dequeue();
-            LastPlayerIndex = entry.playerIndex;
-            LastCaughtFish = entry.fish;
-            LastScoreEarned = entry.earned;
-            LastPlayerScore = entry.score;
-            yield return BannerSequence();
+            if (_queue.Count > 0)
+            {
+                var entry = _queue.Dequeue();
+                LastPlayerIndex = entry.playerIndex;
+                LastCaughtFish = entry.fish;
+                LastScoreEarned = entry.earned;
+                LastPlayerScore = entry.score;
+                yield return BannerSequence(null);
+            }
+            else
+            {
+                yield return BannerSequence(_textQueue.Dequeue());
+            }
         }
         _sequenceCoroutine = null;
     }
 
-    private IEnumerator BannerSequence()
+    private void SetupRandomSide()
     {
+        bool rightSide = Random.value > 0.5f;
+
+        // No rotation — flip the banner horizontally for the left side
+        _bannerRect.localRotation = Quaternion.identity;
+        _bannerRect.localScale = new Vector3(rightSide ? 1f : -1f, 1f, 1f);
+
+        // Counter-flip the text so it stays readable on both sides
+        if (_fishInfoText != null)
+            _fishInfoText.transform.localScale = new Vector3(rightSide ? 1f : -1f, 1f, 1f);
+
+        var canvasRect = _bannerRect.GetComponentInParent<Canvas>().GetComponent<RectTransform>();
+        float halfW = canvasRect.rect.width * 0.5f;
+        float halfH = canvasRect.rect.height * 0.5f;
+        float randomY = Random.Range(-halfH + _yBuffer, halfH - _yBuffer);
+
+        float edgeX = rightSide ? halfW : -halfW;
+        float inward = rightSide ? -1f : 1f;
+        _onScreenPos = new Vector2(edgeX + inward * _bannerRect.rect.width * 0.3f, randomY);
+        _offScreenPos = new Vector2(edgeX - inward * _bannerRect.rect.width, randomY);
+
+    }
+
+    private IEnumerator BannerSequence(string overrideText = null)
+    {
+        SetupRandomSide();
+
         // Cancel any running slide tween
         if (LeanTween.isTweening(_slideTween))
             LeanTween.cancel(_slideTween);
@@ -111,8 +146,8 @@ public class CornerBannerUI : MonoBehaviour
 
         if (_speechBubble != null)
         {
-            if (_fishInfoText != null && LastCaughtFish != null)
-                _fishInfoText.text = $"{LastPlayerScore.PlayerName} caught himself a {LastCaughtFish.ResolvedID}\n+{LastScoreEarned} pts";
+            if (_fishInfoText != null)
+                _fishInfoText.text = overrideText ?? $"{LastPlayerScore.PlayerName} caught himself a {LastCaughtFish.ResolvedID}\n+{LastScoreEarned} pts";
             _speechBubble.gameObject.SetActive(true);
         }
 
@@ -152,58 +187,4 @@ public class CornerBannerUI : MonoBehaviour
 
         yield return new WaitUntil(() => slideOutDone);
     }
-
-    private Vector2 GetBubbleLocalPos()
-    {
-        // Desired screen-space offset: move the bubble along the screen edge away from the corner
-        float d = _bannerRect.rect.width * 0.5f;
-        float screenX = (_corner == Corner.BottomRight || _corner == Corner.TopRight) ? -d : d;
-
-        // Convert screen-space offset to banner local space using the inverse rotation
-        float angle = -GetRotationAngle() * Mathf.Deg2Rad;
-        float cos = Mathf.Cos(angle);
-        float sin = Mathf.Sin(angle);
-        return new Vector2(cos * screenX, sin * screenX);
-    }
-
-    private float GetRotationAngle() => _corner switch
-    {
-        Corner.BottomLeft  =>  45f,
-        Corner.BottomRight => -45f,
-        Corner.TopLeft     => -45f,
-        Corner.TopRight    =>  45f,
-        _ => 0f
-    };
-
-    private Vector2 GetCornerPos()
-    {
-        var canvasRect = _bannerRect.GetComponentInParent<Canvas>().GetComponent<RectTransform>();
-        float halfW = canvasRect.rect.width * 0.5f;
-        float halfH = canvasRect.rect.height * 0.5f;
-        return _corner switch
-        {
-            Corner.BottomLeft  => new Vector2(-halfW, -halfH),
-            Corner.BottomRight => new Vector2( halfW, -halfH),
-            Corner.TopLeft     => new Vector2(-halfW,  halfH),
-            Corner.TopRight    => new Vector2( halfW,  halfH),
-            _ => Vector2.zero
-        };
-    }
-
-    private Vector2 GetInwardDiagonal() => _corner switch
-    {
-        Corner.BottomLeft  => new Vector2( 1f,  1f).normalized,
-        Corner.BottomRight => new Vector2(-1f,  1f).normalized,
-        Corner.TopLeft     => new Vector2( 1f, -1f).normalized,
-        Corner.TopRight    => new Vector2(-1f, -1f).normalized,
-        _ => Vector2.zero
-    };
-
-    // On-screen: banner center sits quarter of its width inward from the corner
-    private Vector2 GetOnScreenAnchoredPos()
-        => GetCornerPos() + GetInwardDiagonal() * (_bannerRect.rect.width * 0.1f);
-
-    // Off-screen: banner center is one full width outside the corner
-    private Vector2 GetOffScreenAnchoredPos()
-        => GetCornerPos() - GetInwardDiagonal() * _bannerRect.rect.width;
 }
