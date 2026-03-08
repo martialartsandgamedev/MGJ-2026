@@ -34,7 +34,7 @@ public class FishingController : MonoBehaviour
     private PlayerState m_currentPlayerState = PlayerState.CantFish;
     private bool m_interactPending;
     
-    public Canvas _playerCanvas;
+    public FloatingUI _playerCanvas;
     
     private DefaultFishingWidget _uiController;
     
@@ -193,6 +193,7 @@ public class FishingController : MonoBehaviour
 
             // If we are in an action window
             bool interacted = ConsumeInteract();
+            
             if (interacted && activeAction == null)
             {
                 Debug.Log("[FishingController] Failed to hit action");

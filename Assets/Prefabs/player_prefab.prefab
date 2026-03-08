@@ -117,7 +117,7 @@ Transform:
   m_GameObject: {fileID: 2441442623975320446}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -146,7 +146,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 2, z: 1}
+  m_Size: {x: 5, y: 5, z: 5}
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &5881543272508015996
 MonoBehaviour:
@@ -180,7 +180,7 @@ MonoBehaviour:
   _playerCharacter: {fileID: 5881543272508015996}
   model: {fileID: 4287191925961380336}
   statusText: {fileID: 0}
-  _playerCanvas: {fileID: 2434823481472012468}
+  _playerCanvas: {fileID: 3414299869518751873}
 --- !u!114 &5399179832755318703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -388,6 +388,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8478821044624499395, guid: 993e9114e08d0104da6e85c978dafad2, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8718985199255209226, guid: 993e9114e08d0104da6e85c978dafad2, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -503,11 +507,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1fc25a40c5f2734583983be73f27782, type: 3}
---- !u!223 &2434823481472012468 stripped
-Canvas:
-  m_CorrespondingSourceObject: {fileID: 6109836998418390899, guid: a1fc25a40c5f2734583983be73f27782, type: 3}
-  m_PrefabInstance: {fileID: 8430944586405187527}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3414299869518751873 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6512975589433730886, guid: a1fc25a40c5f2734583983be73f27782, type: 3}
