@@ -45,18 +45,25 @@ public class PlayerCharacter : MonoBehaviour, IControllable
     private void OnCollisionEnter(Collision collision)
     {
         // Stop boosting when we collide with _anything_
-        _isBoosting = false;
         Rumble.Play(this, Gamepad, 0.4f, 0.2f, 0.3f);
 
-        if (!collision.gameObject.TryGetComponent(out PlayerCharacter other)) return;
+        if (!collision.gameObject.TryGetComponent(out PlayerCharacter other))
+        {
+            _isBoosting = false;
+            return;
+        }
 
         bool theyAreBoosting = other.IsBoosting;
-
         if (!theyAreBoosting) return;
 
         // They are boosting — drop unless I'm also boosting and I'm faster
-        if (_isBoosting && currentSpeed > other.CurrentSpeed) return;
+        if (_isBoosting && currentSpeed > other.CurrentSpeed)
+        {
+            return;
+        }
 
+        _isBoosting = false;
+        other._isBoosting = false;
         _inventory?.DropRandom();
     }
 
