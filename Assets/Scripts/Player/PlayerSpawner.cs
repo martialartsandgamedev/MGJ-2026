@@ -42,9 +42,9 @@ public class PlayerSpawner : MonoBehaviour
 
         var slot = InputManager.ins.Register(player, devices);
 
-#if UNITY_EDITOR
+// #if UNITY_EDITOR
         slot.DebugDespawnPressed += () => StartCoroutine(DespawnNextFrame(player));
-#endif
+// #endif
 
         Coroutine coroutine = m_despawnDelay > 0f ? StartCoroutine(DespawnAfterDelay(player)) : null;
         m_active.Add((player, index, coroutine));
