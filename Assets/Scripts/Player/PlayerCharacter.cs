@@ -41,6 +41,9 @@ public class PlayerCharacter : MonoBehaviour, IControllable
 
     private void OnCollisionEnter(Collision collision)
     {
+        // Stop boosting when we collide with _anything_
+        _isBoosting = false;
+
         if (!collision.gameObject.TryGetComponent(out PlayerCharacter other)) return;
 
         bool theyAreBoosting = other.IsBoosting;
