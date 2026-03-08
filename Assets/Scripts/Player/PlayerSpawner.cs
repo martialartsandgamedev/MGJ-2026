@@ -10,8 +10,8 @@ public class PlayerSpawner : MonoBehaviour
     [SerializeField] private Transform[] m_spawnPoints;
 
     [Header("Events")]
-    public UnityEvent<int> PlayerSpawned;
-    public UnityEvent<int> PlayerDespawned;
+    public UnityEvent<int, PlayerCharacter> PlayerSpawned;
+    public UnityEvent<int, PlayerCharacter> PlayerDespawned;
 
     [Header("Despawn")]
     [Tooltip("Seconds before a player is automatically despawned. Set to 0 to disable.")]
@@ -48,7 +48,7 @@ public class PlayerSpawner : MonoBehaviour
 
         Coroutine coroutine = m_despawnDelay > 0f ? StartCoroutine(DespawnAfterDelay(player)) : null;
         m_active.Add((player, index, coroutine));
-        PlayerSpawned?.Invoke(index);
+        PlayerSpawned?.Invoke(index, player);
     }
 
     private IEnumerator DespawnNextFrame(PlayerCharacter player)
@@ -79,7 +79,7 @@ public class PlayerSpawner : MonoBehaviour
         }
 
         if (despawnedIndex >= 0)
-            PlayerDespawned?.Invoke(despawnedIndex);
+            PlayerDespawned?.Invoke(despawnedIndex, player);
 
         if (player != null)
             Destroy(player.gameObject);

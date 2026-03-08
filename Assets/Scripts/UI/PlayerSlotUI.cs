@@ -10,6 +10,7 @@ public class PlayerSlotUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _playerNameText;
     [SerializeField] private TextMeshProUGUI _bankedScoreText;
     [SerializeField] private TextMeshProUGUI _heldText;
+    [SerializeField] private RectTransform _canUseBoostUI;
 
     private string _playerName;
     private int _lastBankedScore;
@@ -73,5 +74,19 @@ public class PlayerSlotUI : MonoBehaviour
             }
         }
         _lastHeldCount = inventory.HeldCount;
+    }
+
+    public void SetBoostProgress(float boostProgress)
+    {
+        if (boostProgress >= 0.1f)
+        {
+            // Our boost is on cooldown
+            _canUseBoostUI.gameObject.SetActive(false);
+        }
+        else
+        {
+            // We can use boost
+            _canUseBoostUI.gameObject.SetActive(true);
+        }
     }
 }
