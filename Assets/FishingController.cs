@@ -129,8 +129,15 @@ public class FishingController : MonoBehaviour
     private void OnFishingSpotDepleted(FishingSpot context)
     {
         _fishableSpots.Remove(_activeFishingSpot);
+        
+        if (_uiController)
+        {
+            Destroy(_uiController.gameObject);
+        }
+
         _activeFishingSpot = null;
-        SetState(PlayerState.CantFish);
+        SetState(_fishableSpots.Any() ? PlayerState.CanFish : PlayerState.CantFish);
+        StopCoroutine(_fishingCoroutine);
     }
 
     public void SetState(PlayerState playerState)
