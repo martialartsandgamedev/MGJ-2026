@@ -203,7 +203,11 @@ public class FishingController : MonoBehaviour
             if (interacted && activeAction == null)
             {
                 Debug.Log("[FishingController] Failed to hit action");
-                _actions.ForEach(a => a.Attempt = FishingAction.AttemptState.Upcoming);
+                _actions.ForEach(a =>
+                {
+                    a.Attempt = FishingAction.AttemptState.Upcoming;
+                    _uiController.ResetAction(a.Index);
+                });
                 elapsed = 0;
             }
             else if (interacted && activeAction != null)
