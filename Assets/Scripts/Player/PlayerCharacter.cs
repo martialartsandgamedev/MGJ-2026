@@ -32,6 +32,7 @@ public class PlayerCharacter : MonoBehaviour, IControllable
 
     private PlayerInventory _inventory;
     public Gamepad Gamepad { get; private set; }
+    private Vector3 _boostDirection;
 
     private void Awake()
     {
@@ -98,8 +99,7 @@ public class PlayerCharacter : MonoBehaviour, IControllable
             }
 
             var boostSpeed = boostSettings.SpeedCurve.Evaluate(Mathf.Clamp01(_boostProgress / boostSettings.Duration));
-            _velocity += Vector3.Normalize(new Vector3(_aimVector.x, 0, _aimVector.y)) *
-                         (boostSpeed * Time.fixedDeltaTime);
+            _velocity += _boostDirection * (boostSpeed * Time.fixedDeltaTime);
         }
 
         if (_timeUntilBoost > 0f)
@@ -132,6 +132,7 @@ public class PlayerCharacter : MonoBehaviour, IControllable
             _isBoosting = true;
             _boostProgress = 0;
             _timeUntilBoost = boostSettings.Cooldown;
+            _boostDirection = Vector3.Normalize(new Vector3(_aimVector.x, 0, _aimVector.y));
             Debug.LogFormat("{0} is starting a boost", name);
         }
     }
