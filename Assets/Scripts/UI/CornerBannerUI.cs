@@ -20,6 +20,21 @@ public class CornerBannerUI : MonoBehaviour
     [SerializeField] private LeanTweenType _easeIn = LeanTweenType.easeOutBack;
     [SerializeField] private LeanTweenType _easeOut = LeanTweenType.easeInBack;
 
+    [Header("Puns")]
+    [SerializeField] private float _punInterval = 10f;
+    [SerializeField] private string[] _puns = {
+        "Reel talk — you're doing great!",
+        "That's a fin-tastic catch!",
+        "Keep it reel out there!",
+        "O-fish-ally loving this game!",
+        "Don't let the others out-fish you!",
+        "Water you waiting for? Catch more fish!",
+        "Cod you believe how fun this is?",
+        "Scale up your game!",
+        "Something smells fishy... and I like it!",
+        "You're on a reel roll!",
+    };
+
     private Vector2 _onScreenPos;
     private Vector2 _offScreenPos;
     private int _slideTween = -1;
@@ -49,6 +64,7 @@ public class CornerBannerUI : MonoBehaviour
         if (ScoreManager.ins != null)
             ScoreManager.ins.OnFishCaught += OnFishCaught;
         PlayerInventory.OnBanked += OnBanked;
+        StartCoroutine(PunTimer());
     }
 
     private void OnDisable()
@@ -56,6 +72,17 @@ public class CornerBannerUI : MonoBehaviour
         if (ScoreManager.ins != null)
             ScoreManager.ins.OnFishCaught -= OnFishCaught;
         PlayerInventory.OnBanked -= OnBanked;
+    }
+
+    private IEnumerator PunTimer()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(_punInterval);
+            if (_puns == null || _puns.Length == 0) continue;
+            _textQueue.Enqueue(_puns[Random.Range(0, _puns.Length)]);
+            _sequenceCoroutine ??= StartCoroutine(ProcessQueue());
+        }
     }
 
     private void OnBanked(string playerName, int amount)
