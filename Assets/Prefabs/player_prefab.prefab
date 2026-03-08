@@ -164,6 +164,7 @@ MonoBehaviour:
   currentSpeed: 0
   movementSettings: {fileID: 11400000, guid: 5d025664dd6feaa4aa9a8aa09cdf631a, type: 2}
   floatingUI: {fileID: 3414299869518751873}
+  boostSettings: {fileID: 11400000, guid: c21e23e3acdc7994c8a43cf36a62ef63, type: 2}
 --- !u!114 &885727420326924937
 MonoBehaviour:
   m_ObjectHideFlags: 0
