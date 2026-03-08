@@ -123,11 +123,12 @@ public class PlayerCharacter : MonoBehaviour, IControllable
         m_controlHandler.ProcessIntent(ctx);
         _aimVector = ctx.MoveDirection;
         Inputs = ctx;
-        if (!_isBoosting && ctx.Boost)
+        if (!_isBoosting && _timeUntilBoost == 0f &&ctx.Boost)
         {
             _isBoosting = true;
             _boostProgress = 0;
             _timeUntilBoost = boostSettings.Cooldown;
+            Debug.LogFormat("{0} is starting a boost", name);
         }
     }
 
