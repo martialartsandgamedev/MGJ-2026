@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 /**
@@ -20,6 +21,7 @@ public class PlayerCharacter : MonoBehaviour, IControllable
     public string ControllableID => m_id;
     public PlayerInputContext Inputs { get; private set; }
     public event Action InteractPressed;
+    public UnityEvent<PlayerCharacter, float> boostCooldownChanged;
 
     private Rigidbody _rb;
 
@@ -32,6 +34,7 @@ public class PlayerCharacter : MonoBehaviour, IControllable
 
     private PlayerInventory _inventory;
     public Gamepad Gamepad { get; private set; }
+    private Vector3 _boostDirection;
 
     private void Awake()
     {
@@ -41,6 +44,10 @@ public class PlayerCharacter : MonoBehaviour, IControllable
 
     private void OnCollisionEnter(Collision collision)
     {
+        // Stop boosting when we collide with _anything_
+        _isBoosting = false;
+        Rumble.Play(this, Gamepad, 0.4f, 0.2f, 0.3f);
+
         if (!collision.gameObject.TryGetComponent(out PlayerCharacter other)) return;
 
         bool theyAreBoosting = other.IsBoosting;
@@ -51,7 +58,6 @@ public class PlayerCharacter : MonoBehaviour, IControllable
         if (_isBoosting && currentSpeed > other.CurrentSpeed) return;
 
         _inventory?.DropRandom();
-        Rumble.Play(this, Gamepad, 0.4f, 0.2f, 0.3f);
     }
 
     public void Init(int playerIndex, InputDevice[] devices)
@@ -95,12 +101,13 @@ public class PlayerCharacter : MonoBehaviour, IControllable
             }
 
             var boostSpeed = boostSettings.SpeedCurve.Evaluate(Mathf.Clamp01(_boostProgress / boostSettings.Duration));
-            _velocity *= boostSpeed;
+            _velocity += _boostDirection * (boostSpeed * Time.fixedDeltaTime);
         }
 
         if (_timeUntilBoost > 0f)
         {
             _timeUntilBoost = Mathf.MoveTowards(_timeUntilBoost, 0f, Time.fixedDeltaTime);
+            boostCooldownChanged?.Invoke(this, _timeUntilBoost);
         }
 
         _rb.linearVelocity = _velocity / Time.fixedDeltaTime;
@@ -123,11 +130,14 @@ public class PlayerCharacter : MonoBehaviour, IControllable
         m_controlHandler.ProcessIntent(ctx);
         _aimVector = ctx.MoveDirection;
         Inputs = ctx;
-        if (!_isBoosting && ctx.Boost)
+        if (!_isBoosting && _timeUntilBoost == 0f && ctx.Boost)
         {
             _isBoosting = true;
             _boostProgress = 0;
             _timeUntilBoost = boostSettings.Cooldown;
+            boostCooldownChanged?.Invoke(this, _timeUntilBoost);
+            _boostDirection = Vector3.Normalize(new Vector3(_aimVector.x, 0, _aimVector.y));
+            Debug.LogFormat("{0} is starting a boost", name);
         }
     }
 

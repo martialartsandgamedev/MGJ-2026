@@ -89,14 +89,22 @@ public class WorldContextManager : MonoBehaviour
                 {
                     _fishSpawnTimer = 0f;
 
-                    Vector3 randomDirection = Random.insideUnitSphere * _radius;
-                    randomDirection += transform.position;
-
-                    NavMeshHit hit;
-
-                    if (NavMesh.SamplePosition(randomDirection, out hit, _radius, NavMesh.AllAreas))
+                    Vector3 spawnPos = Vector3.zero;
+                    for (int i = 0; i < 10; i++)
                     {
-                        _randomPoint = hit.position;
+                        Vector2 circle = Random.insideUnitCircle * _radius;
+                        Vector3 candidate = transform.position + new Vector3(circle.x, 0f, circle.y);
+                        if (NavMesh.SamplePosition(candidate, out NavMeshHit hit, 10f, NavMesh.AllAreas))
+                        {
+                            float xzDist = Vector2.Distance(new Vector2(hit.position.x, hit.position.z),
+                                                            new Vector2(candidate.x, candidate.z));
+                            if (xzDist <= 2f) { spawnPos = hit.position; break; }
+                        }
+                    }
+
+                    if (spawnPos != Vector3.zero)
+                    {
+                        _randomPoint = spawnPos;
 
                         var _fishingSpotInstance = Instantiate(_fishingSpotTemplate);
                         _fishingSpotInstance.transform.position = _randomPoint;
