@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 using UnityEngine.Splines;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace Controllers
@@ -21,13 +22,17 @@ namespace Controllers
         private List<FishingAction> _actions;
         private ParticleSystem _particleSystemInstance;
         private float _elapsed;
+        
+        [SerializeField]
+        private Transform _stockRoot;
+        
+        [SerializeField]
+        private Image _stockImage;
 
-        // private void OnEnable()
-        // {
-        //     BindContext();
-        //     SyncContext();
-        // }
-
+        [SerializeField]
+        private Image _rarityCoin;
+        
+        
         //[Button]
         public void BindContext(FishingSpotDefinition spotDefinition)
         {
@@ -63,6 +68,35 @@ namespace Controllers
             if (context.FollowsPath)
             {
                 _splineAnimate.Play();
+            }
+            
+            for(int f = 0 ; f< _stockRoot.childCount ; f ++)
+            {
+                Destroy(_stockRoot.GetChild(f).gameObject);
+            }
+            
+            for (int i = 0; i < context.RemainingFish; i++)
+            {
+                var _stock = Instantiate(_stockImage, _stockRoot);
+            }
+
+            switch (context.Table[0].Rarity)
+            {
+                case FishRarity.Bronze:
+                    _rarityCoin.color = new Color(0.5f, 0.2f, 0);
+                    break;
+                
+                case FishRarity.Silver:
+                    _rarityCoin.color = new Color(0.5f, 0.5f, 0.5f);
+                    break;
+                
+                case FishRarity.Gold:
+                    _rarityCoin.color = new Color(0.5f, 0.5f, 0);
+                    break;
+                
+                case FishRarity.Unique:
+                    _rarityCoin.color = new Color(0.1f, 1f, 1);
+                    break;
             }
         }
 

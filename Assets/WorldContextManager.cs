@@ -30,7 +30,13 @@ public class WorldContextManager : MonoBehaviour
     [SerializeField]
     private List<FishingSpotDefinition> _fishingSpotDefinitions;
 
+    [SerializeField]
     private List<FishingSpot> _activeFishingSpots = new List<FishingSpot>();
+
+    private float _uniqueSpawnTime = 50f;
+    private float _goldSpawnTime = 30f;
+    private float _silverSpawnTime = 15f;
+    
     
     private void OnEnable()
     {
@@ -42,37 +48,13 @@ public class WorldContextManager : MonoBehaviour
         Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(transform.position, _radius);
     }
-
-    // private void Update()
-    // {
-    //     _fishSpawnTimer += Time.deltaTime;
-    //
-    //     if (_fishSpawnTimer >= _fishSpawnInterval)
-    //     {
-    //         _fishSpawnTimer = 0f;
-    //
-    //         Vector3 randomDirection = Random.insideUnitSphere * _radius;
-    //         randomDirection += transform.position;
-    //
-    //         NavMeshHit hit;
-    //         if (NavMesh.SamplePosition(randomDirection, out hit, _radius, NavMesh.AllAreas))
-    //         {
-    //             _randomPoint = hit.position;
-    //         }
-    //     }
-    //
-    //     if (_randomPoint != Vector3.zero)
-    //     {
-    //         DebugDrawSphere(_randomPoint, 5f, Color.red);
-    //     }
-    // }
     
     //0 - Equal - -1 favours uncommon - 1 favors common
     List<FishingSpotDefinition> GetDefinitions(float time)
     {
-        if (time > 200) return _fishingSpotDefinitions.Where(x=>x.Table[0].Rarity <= FishRarity.Unique).ToList();
-        if (time > 90) return _fishingSpotDefinitions.Where(x=>x.Table[0].Rarity <= FishRarity.Gold).ToList();
-        if (time > 30) return _fishingSpotDefinitions.Where(x=>x.Table[0].Rarity <= FishRarity.Silver).ToList();
+        if (time > _uniqueSpawnTime) return _fishingSpotDefinitions.Where(x=>x.Table[0].Rarity <= FishRarity.Unique).ToList();
+        if (time > _goldSpawnTime) return _fishingSpotDefinitions.Where(x=>x.Table[0].Rarity <= FishRarity.Gold).ToList();
+        if (time > _silverSpawnTime) return _fishingSpotDefinitions.Where(x=>x.Table[0].Rarity <= FishRarity.Silver).ToList();
 
         return _fishingSpotDefinitions.Where(x=>x.Table[0].Rarity <= FishRarity.Bronze).ToList();
     }
