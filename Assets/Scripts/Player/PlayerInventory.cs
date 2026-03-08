@@ -82,6 +82,7 @@ public class PlayerInventory : MonoBehaviour
         _heldFish.Clear();
         OnInventoryChanged?.Invoke(PlayerIndex, this);
         OnBanked?.Invoke(_character.ControllableID, amountBanked);
+        Rumble.Play(_character, _character.Gamepad, 0.3f, 0.5f, 0.25f);
     }
 
     /// <summary>

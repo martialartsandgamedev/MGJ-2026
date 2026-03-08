@@ -209,6 +209,7 @@ public class FishingController : MonoBehaviour
                     _uiController.ResetAction(a.Index);
                 });
                 elapsed = 0;
+                Rumble.Play(_playerCharacter, _playerCharacter.Gamepad, 0.1f, 0.3f, 0.2f);
             }
             else if (interacted && activeAction != null)
             {

@@ -31,6 +31,7 @@ public class PlayerCharacter : MonoBehaviour, IControllable
     [SerializeField] private BoostSettings boostSettings;
 
     private PlayerInventory _inventory;
+    public Gamepad Gamepad { get; private set; }
 
     private void Awake()
     {
@@ -50,6 +51,7 @@ public class PlayerCharacter : MonoBehaviour, IControllable
         if (_isBoosting && currentSpeed > other.CurrentSpeed) return;
 
         _inventory?.DropRandom();
+        Rumble.Play(this, Gamepad, 0.4f, 0.2f, 0.3f);
     }
 
     public void Init(int playerIndex, InputDevice[] devices)
@@ -57,6 +59,9 @@ public class PlayerCharacter : MonoBehaviour, IControllable
         PlayerIndex = playerIndex;
         m_id = $"Player {playerIndex + 1}";
         gameObject.name = m_id;
+
+        foreach (var device in devices)
+            if (device is Gamepad gp) { Gamepad = gp; break; }
 
         floatingUI = GetComponentInChildren<FloatingUI>();
         floatingUI.Init(devices);
