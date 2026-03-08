@@ -61,7 +61,7 @@ namespace Controllers
                 float z = Mathf.Cos(angle);
                 
                 //Add centre and radius
-                var positionOnCircle = Vector3.zero + new Vector3(x, z, 0 ) * 0.8f * _backingContainer.localScale.x/2;
+                var positionOnCircle = new Vector3(x, z, 0 ) * (0.8f * _backingContainer.localScale.x)/2;
                 actionUI.anchoredPosition = positionOnCircle;
             }
 
