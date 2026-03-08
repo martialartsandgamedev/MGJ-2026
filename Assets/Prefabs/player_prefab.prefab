@@ -99,6 +99,7 @@ GameObject:
   - component: {fileID: 5881543272508015996}
   - component: {fileID: 885727420326924937}
   - component: {fileID: 5399179832755318703}
+  - component: {fileID: 20098263302081442}
   - component: {fileID: 280241445956971833}
   - component: {fileID: -7325418180240794306}
   m_Layer: 0
@@ -164,6 +165,7 @@ MonoBehaviour:
   currentSpeed: 0
   movementSettings: {fileID: 11400000, guid: 5d025664dd6feaa4aa9a8aa09cdf631a, type: 2}
   floatingUI: {fileID: 3414299869518751873}
+  boostSettings: {fileID: 11400000, guid: c21e23e3acdc7994c8a43cf36a62ef63, type: 2}
 --- !u!114 &885727420326924937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,6 +195,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Controller: {fileID: 280241445956971833}
+--- !u!114 &20098263302081442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2441442623975320446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f360fa693a142f48bc3daefb8d0cfc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!143 &280241445956971833
 CharacterController:
   m_ObjectHideFlags: 0

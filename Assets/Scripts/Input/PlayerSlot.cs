@@ -19,7 +19,7 @@ public class PlayerSlot
     private InputUser m_user;
     private PlayerInputContext m_intent;
     private readonly Action<InputAction.CallbackContext> m_onInteract;
-    private readonly Action<InputAction.CallbackContext> m_onDash;
+    private readonly Action<InputAction.CallbackContext> m_onBoost;
 
     public PlayerSlot(IControllable controllable, InputDevice[] devices)
     {
@@ -31,18 +31,16 @@ public class PlayerSlot
             m_user = InputUser.PerformPairingWithDevice(device, user: m_user);
 
         m_onInteract = _ => Controllable.OnAction(PlayerAction.Interact);
-        m_onDash     = _ => Controllable.OnAction(PlayerAction.Dash);
+        m_onBoost     = _ => Controllable.OnAction(PlayerAction.Boost);
 
         m_inputs = new Inputs();
         m_user.AssociateActionsWithUser(m_inputs);
         m_inputs.Player.Enable();
 
-        m_inputs.Player.Sprint.started     += OnSprint;
-        m_inputs.Player.Sprint.canceled    += OnSprint;
         m_inputs.Player.Attack.started     += OnPrimaryAction;
         m_inputs.Player.Attack.canceled    += OnPrimaryAction;
         m_inputs.Player.Interact.started   += m_onInteract;
-       // m_inputs.Player.Dash.started       += m_onDash;
+        m_inputs.Player.Boost.started      += m_onBoost;
 
 #if UNITY_EDITOR
         m_debugDespawnAction = new InputAction("DebugDespawn", InputActionType.Button);
@@ -55,13 +53,11 @@ public class PlayerSlot
 
     public void Dispose()
     {
-        m_inputs.Player.Sprint.started     -= OnSprint;
-        m_inputs.Player.Sprint.canceled    -= OnSprint;
         m_inputs.Player.Attack.started     -= OnPrimaryAction;
         m_inputs.Player.Attack.canceled    -= OnPrimaryAction;
         m_inputs.Player.Interact.started   -= m_onInteract;
-        //m_inputs.Player.Dash.started       -= m_onDash;
-
+        m_inputs.Player.Boost.started      -= m_onBoost;
+        
 #if UNITY_EDITOR
         m_debugDespawnAction.performed -= OnDebugDespawn;
         m_debugDespawnAction.Disable();
@@ -100,6 +96,7 @@ public class PlayerSlot
     {
         m_intent.MoveDirection = m_inputs.Player.Move.ReadValue<Vector2>();
         m_intent.CameraDelta   = m_inputs.Player.Look.ReadValue<Vector2>();
+        m_intent.Boost         = m_inputs.Player.Boost.WasPressedThisDynamicUpdate();
         Controllable.AssertControlIntent(m_intent);
     }
 
