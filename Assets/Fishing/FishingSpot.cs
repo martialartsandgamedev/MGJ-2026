@@ -50,13 +50,14 @@ namespace Controllers
         public void SyncContext()
         {
             var main = _particleSystemInstance.main;
+            
             main.maxParticles = (int)context.RemainingFish;
 
             var primaryFishable = context.Table[0];
-            main.startSize =
-                new ParticleSystem.MinMaxCurve(primaryFishable.SizeRange.x * 5f, primaryFishable.SizeRange.y * 5f);
+            
+            main.startSize = new ParticleSystem.MinMaxCurve(primaryFishable.SizeRange.x * 5f, primaryFishable.SizeRange.y * 5f);
 
-            _particleSystemInstance.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            _particleSystemInstance.Stop(true, ParticleSystemStopBehavior.StopEmitting);
             _particleSystemInstance.Play();
 
             if (context.FollowsPath)

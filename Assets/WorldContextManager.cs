@@ -11,7 +11,6 @@ public class WorldContextManager : MonoBehaviour
     [SerializeField]
     private float _radius = 20f;
     
-
     [SerializeField]
     private float _fishSpawnInterval = 5f;
     
@@ -36,6 +35,12 @@ public class WorldContextManager : MonoBehaviour
     private void OnEnable()
     {
         StartCoroutine(ManageFishSpawns());
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireSphere(transform.position, _radius);
     }
 
     // private void Update()
