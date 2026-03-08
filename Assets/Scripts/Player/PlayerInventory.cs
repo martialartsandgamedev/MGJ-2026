@@ -31,11 +31,30 @@ public class PlayerInventory : MonoBehaviour
     }
 
     private readonly List<Fish> _heldFish = new();
+    private PlayerCharacter _character;
+    private bool _inBankZone;
 
     public void Init(int playerIndex)
     {
         PlayerIndex = playerIndex;
+        _character = GetComponent<PlayerCharacter>();
     }
+
+    public void NotifyEnterBankZone()
+    {
+        if (_inBankZone) return;
+        _inBankZone = true;
+        _character.InteractPressed += OnInteractInBankZone;
+    }
+
+    public void NotifyExitBankZone()
+    {
+        if (!_inBankZone) return;
+        _inBankZone = false;
+        _character.InteractPressed -= OnInteractInBankZone;
+    }
+
+    private void OnInteractInBankZone() => BankAll();
 
     /// <summary>Add a caught fish to the held inventory.</summary>
     public void AddFish(Fish fish)

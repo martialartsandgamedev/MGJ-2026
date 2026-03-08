@@ -217,6 +217,16 @@ MonoBehaviour:
     - {fileID: -1394721094, guid: 6e95df268976c7c4ca47c20343c407f5, type: 3}
     - {fileID: 1840942464, guid: 6e95df268976c7c4ca47c20343c407f5, type: 3}
     PlayStationSprites:
+    - {fileID: -1092914485, guid: 5f87c05151306384297f0602487dba42, type: 3}
+    - {fileID: 999652971, guid: 5f87c05151306384297f0602487dba42, type: 3}
+  - ActionId: bank
+    PCSprites:
+    - {fileID: -2041047861, guid: f81b907758d436443b411bf242d4ed77, type: 3}
+    - {fileID: -458338306, guid: f81b907758d436443b411bf242d4ed77, type: 3}
+    XboxSprites:
+    - {fileID: -1394721094, guid: 6e95df268976c7c4ca47c20343c407f5, type: 3}
+    - {fileID: 1840942464, guid: 6e95df268976c7c4ca47c20343c407f5, type: 3}
+    PlayStationSprites:
     - {fileID: 2036561160, guid: 5f87c05151306384297f0602487dba42, type: 3}
     - {fileID: -1274849963, guid: 5f87c05151306384297f0602487dba42, type: 3}
   m_cycleInterval: 0.35

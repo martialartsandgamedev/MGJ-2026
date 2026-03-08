@@ -26,11 +26,30 @@ public class PlayerCharacter : MonoBehaviour, IControllable
     private float _boostProgress;
     private float _timeUntilBoost;
     private bool _isBoosting;
+    public bool IsBoosting => _isBoosting;
+    public float CurrentSpeed => currentSpeed;
     [SerializeField] private BoostSettings boostSettings;
+
+    private PlayerInventory _inventory;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
+        _inventory = GetComponent<PlayerInventory>();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!collision.gameObject.TryGetComponent(out PlayerCharacter other)) return;
+
+        bool theyAreBoosting = other.IsBoosting;
+
+        if (!theyAreBoosting) return;
+
+        // They are boosting — drop unless I'm also boosting and I'm faster
+        if (_isBoosting && currentSpeed > other.CurrentSpeed) return;
+
+        _inventory?.DropRandom();
     }
 
     public void Init(int playerIndex, InputDevice[] devices)
