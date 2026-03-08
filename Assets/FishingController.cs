@@ -48,7 +48,27 @@ public class FishingController : MonoBehaviour
 
     private void OnEnable()
     {
-        model.material.color = Color.red;
+        switch (_playerCharacter.PlayerIndex) {
+            case 1: 
+                ColorUtility.TryParseHtmlString("00FF28", out var color);
+                model.material.color = color;
+                break;
+            case 2: 
+                ColorUtility.TryParseHtmlString("A759CF", out var color2);
+                model.material.color = color2;
+                break;
+            case 3: 
+                ColorUtility.TryParseHtmlString("E7642D", out var color3);
+                model.material.color = color3;
+                break;
+            case 4: 
+                ColorUtility.TryParseHtmlString("EE398B", out var color4);
+                model.material.color = color4;
+                break;
+            default:
+                model.material.color = Color.cyan;
+                break;
+        }
         _playerCharacter.InteractPressed += OnInteract;
     }
 
@@ -153,20 +173,20 @@ public class FishingController : MonoBehaviour
         Debug.Log("[FakeGameplay] Setting state to " + Enum.GetName(typeof(PlayerState), playerState));
         m_currentPlayerState = playerState;
         if (statusText) statusText.text = StateStrings[m_currentPlayerState];
-        switch (playerState)
-        {
-            case PlayerState.CantFish:
-                model.material.color = Color.red;
-                break;
-            case PlayerState.CanFish:
-                model.material.color = Color.yellow;
-                break;
-            case PlayerState.IsFishing:
-                model.material.color = Color.green;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(playerState), playerState, null);
-        }
+        // switch (playerState)
+        // {
+        //     case PlayerState.CantFish:
+        //         model.material.color = Color.red;
+        //         break;
+        //     case PlayerState.CanFish:
+        //         model.material.color = Color.yellow;
+        //         break;
+        //     case PlayerState.IsFishing:
+        //         model.material.color = Color.green;
+        //         break;
+        //     default:
+        //         throw new ArgumentOutOfRangeException(nameof(playerState), playerState, null);
+        // }
     }
 
     private static readonly Dictionary<PlayerState, string> StateStrings = new()
