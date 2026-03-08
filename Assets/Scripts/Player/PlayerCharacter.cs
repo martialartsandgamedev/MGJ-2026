@@ -95,7 +95,8 @@ public class PlayerCharacter : MonoBehaviour, IControllable
             }
 
             var boostSpeed = boostSettings.SpeedCurve.Evaluate(Mathf.Clamp01(_boostProgress / boostSettings.Duration));
-            _velocity += new Vector3(_aimVector.x, 0, _aimVector.y) * (boostSpeed * Time.fixedDeltaTime);
+            _velocity += Vector3.Normalize(new Vector3(_aimVector.x, 0, _aimVector.y)) *
+                         (boostSpeed * Time.fixedDeltaTime);
         }
 
         if (_timeUntilBoost > 0f)
@@ -123,7 +124,7 @@ public class PlayerCharacter : MonoBehaviour, IControllable
         m_controlHandler.ProcessIntent(ctx);
         _aimVector = ctx.MoveDirection;
         Inputs = ctx;
-        if (!_isBoosting && _timeUntilBoost == 0f &&ctx.Boost)
+        if (!_isBoosting && _timeUntilBoost == 0f && ctx.Boost)
         {
             _isBoosting = true;
             _boostProgress = 0;
