@@ -104,7 +104,7 @@ public class FishingController : MonoBehaviour
         // If we are fishing and our spot has been restricted to us, stop all fishing activities and cleanup UI
         if (!canFish && _activeFishingSpot == spot)
         {
-            _activeFishingSpot.OnFishingSpotDepleted.RemoveListener(OnFishingSpotDepleted);
+            WorldContextEvents.Ins.FishingSpotDepleted.RemoveListener(OnFishingSpotDepleted);
             if (_fishingCoroutine != null)
             {
                 StopCoroutine(_fishingCoroutine);
@@ -126,7 +126,7 @@ public class FishingController : MonoBehaviour
         }
     }
 
-    private void OnFishingSpotDepleted()
+    private void OnFishingSpotDepleted(FishingSpot context)
     {
         _fishableSpots.Remove(_activeFishingSpot);
         _activeFishingSpot = null;
@@ -175,7 +175,7 @@ public class FishingController : MonoBehaviour
     private IEnumerator TryFishActive()
     {
         _activeFishingSpot = _fishableSpots.First();
-        _activeFishingSpot.OnFishingSpotDepleted.AddListener(OnFishingSpotDepleted);
+        WorldContextEvents.Ins.FishingSpotDepleted.AddListener(OnFishingSpotDepleted);
         SetState(PlayerState.IsFishing);
 
         FishingSpot spot = _activeFishingSpot;

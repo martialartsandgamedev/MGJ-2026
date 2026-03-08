@@ -1,4 +1,5 @@
 using Controllers;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,20 @@ public class WorldContextManager : MonoBehaviour
     private void OnEnable()
     {
         StartCoroutine(ManageFishSpawns());
+        WorldContextEvents.Ins.FishingSpotDepleted.AddListener(OnFishingSpotDepleted);
+    }
+
+    private void OnDisable()
+    {
+        WorldContextEvents.Ins.FishingSpotDepleted.RemoveListener(OnFishingSpotDepleted);
+    }
+    private void OnFishingSpotDepleted(FishingSpot context)
+    {
+        if (_activeFishingSpots.Contains(context))
+        {
+            _activeFishingSpots.Remove(context);
+            Destroy(context.gameObject);
+        }
     }
 
     private void OnDrawGizmos()
