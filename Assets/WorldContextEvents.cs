@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Controllers;
+using UnityEngine;
 using UnityEngine.Events;
 public class WorldContextEvents:MonoBehaviour
 {
@@ -6,6 +7,8 @@ public class WorldContextEvents:MonoBehaviour
     
     //World context events
     public UnityEvent<FishDefinition> RareFishSpawned;
+    
+    public UnityEvent<FishingSpot> FishingSpotDepleted;
 
     private void Awake()
     {
@@ -20,6 +23,11 @@ public class WorldContextEvents:MonoBehaviour
         if (RareFishSpawned == null)
         {
             RareFishSpawned = new UnityEvent<FishDefinition>();
-        }        
+        }    
+        
+        if (FishingSpotDepleted == null)
+        {
+            FishingSpotDepleted = new UnityEvent<FishingSpot>();
+        }    
     }
 }

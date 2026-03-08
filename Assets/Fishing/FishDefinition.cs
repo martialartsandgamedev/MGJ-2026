@@ -35,7 +35,7 @@ public class Fish
     {
         //Make sure the resolved size does not go outside the range of the enum value member count
         Size = (FishSize) Mathf.Clamp(  Random.Range(definition.SizeRange.x, definition.SizeRange.y), 0, Enum.GetValues(typeof(FishSize)).Length-1);
-        Rarity = (FishRarity)Random.Range(0, Enum.GetValues(typeof(FishRarity)).Length);
+        Rarity = definition.Rarity;
 
         ResolvedID = string.Format($"{Size} {Rarity} {definition.ID}");
         

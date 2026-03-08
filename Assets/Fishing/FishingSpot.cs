@@ -17,8 +17,7 @@ namespace Controllers
         [SerializeField] private SplineAnimate _splineAnimate = null;
 
         public FishingSpotContext context;
-        public UnityEvent OnFishingSpotDepleted;
-
+        
         private List<FishingAction> _actions;
         private ParticleSystem _particleSystemInstance;
         private float _elapsed;
@@ -139,8 +138,7 @@ namespace Controllers
             if (context.RemainingFish <= 0)
             {
                 Debug.LogFormat("[FishingSpot] {0} has been depleted", name);
-                OnFishingSpotDepleted.Invoke();
-                Destroy(gameObject);
+                WorldContextEvents.Ins.FishingSpotDepleted.Invoke(this);
             }
             return fish;
         }
