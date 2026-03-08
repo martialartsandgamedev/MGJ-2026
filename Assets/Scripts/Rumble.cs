@@ -18,13 +18,13 @@ public static class Rumble
     public static void Play(MonoBehaviour host, Gamepad gamepad, float lowFreq, float highFreq, float duration)
     {
         if (gamepad == null) return;
-        host.StartCoroutine(DoRumble(gamepad, lowFreq, highFreq, duration));
+        // host.StartCoroutine(DoRumble(gamepad, lowFreq, highFreq, duration));
     }
 
     private static IEnumerator DoRumble(Gamepad gamepad, float lowFreq, float highFreq, float duration)
     {
-        gamepad.SetMotorSpeeds(lowFreq, highFreq);
+        // gamepad.SetMotorSpeeds(lowFreq, highFreq);
         yield return new WaitForSeconds(duration);
-        gamepad.SetMotorSpeeds(0f, 0f);
+        // gamepad.SetMotorSpeeds(0f, 0f);
     }
 }
