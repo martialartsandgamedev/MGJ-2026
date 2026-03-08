@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Acceleration: 0.25
   DragStrength: 0.1
-  MaxSpeed: 0.25
+  MaxSpeed: 0.2
