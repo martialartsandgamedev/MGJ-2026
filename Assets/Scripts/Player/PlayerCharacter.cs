@@ -37,6 +37,8 @@ public class PlayerCharacter : MonoBehaviour, IControllable
         floatingUI = GetComponentInChildren<FloatingUI>();
         floatingUI.Init(devices);
         floatingUI.ShowPrompt("direction", 5f);
+
+        GetComponent<PlayerInventory>()?.Init(playerIndex);
     }
 
     public ControlHandler ControlHandler => m_controlHandler;

@@ -39,6 +39,12 @@ public class FishingController : MonoBehaviour
     private DefaultFishingWidget _uiController;
     
     private Coroutine _fishingCoroutine;
+    private PlayerInventory _inventory;
+
+    private void Awake()
+    {
+        _inventory = GetComponent<PlayerInventory>();
+    }
 
     private void OnEnable()
     {
@@ -215,6 +221,7 @@ public class FishingController : MonoBehaviour
 
                 var fish = _activeFishingSpot.RemoveStock();
 
+                _inventory?.AddFish(fish);
                 ScoreManager.ins?.ReportCatch(_playerCharacter.PlayerIndex, fish);
                
                 _activeFishingSpot = null;
