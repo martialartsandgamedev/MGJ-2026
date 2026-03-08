@@ -103,7 +103,7 @@ public class PlayerSlot
         m_intent.CameraDelta   = m_inputs.Player.Look.ReadValue<Vector2>();
         m_intent.Boost         = m_inputs.Player.Boost.WasPressedThisDynamicUpdate();
         Controllable.AssertControlIntent(m_intent);
-        Debug.LogFormat("Slot input ticked");
+        // Debug.LogFormat("Slot input ticked");
     }
 
     private void OnSprint(InputAction.CallbackContext ctx)

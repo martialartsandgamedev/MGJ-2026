@@ -48,27 +48,7 @@ public class FishingController : MonoBehaviour
 
     private void OnEnable()
     {
-        switch (_playerCharacter.PlayerIndex) {
-            case 1: 
-                ColorUtility.TryParseHtmlString("00FF28", out var color);
-                model.material.color = color;
-                break;
-            case 2: 
-                ColorUtility.TryParseHtmlString("A759CF", out var color2);
-                model.material.color = color2;
-                break;
-            case 3: 
-                ColorUtility.TryParseHtmlString("E7642D", out var color3);
-                model.material.color = color3;
-                break;
-            case 4: 
-                ColorUtility.TryParseHtmlString("EE398B", out var color4);
-                model.material.color = color4;
-                break;
-            default:
-                model.material.color = Color.cyan;
-                break;
-        }
+
         _playerCharacter.InteractPressed += OnInteract;
     }
 
@@ -105,6 +85,33 @@ public class FishingController : MonoBehaviour
     private void LateUpdate()
     {
         m_interactPending = false;
+    }
+
+    public void Initialise(int playerIndex)
+    { 
+        var color = Color.cyan;
+            switch (playerIndex) {
+            case 0: 
+                ColorUtility.TryParseHtmlString("#00FF28", out color);
+                model.material.color = color;
+                break;
+            case 1: 
+                ColorUtility.TryParseHtmlString("#A759CF", out  color);
+                model.material.color = color;
+                break;
+            case 2: 
+                ColorUtility.TryParseHtmlString("#E7642D", out color);
+                model.material.color = color;
+                break;
+            case 3: 
+                ColorUtility.TryParseHtmlString("#EE398B", out  color);
+                model.material.color = color;
+                break;
+            default:
+                model.material.color = color;
+                break;
+        }
+        Debug.LogFormat("Setting color on player {0} to {1}", playerIndex, color);
     }
 
     private readonly HashSet<FishingSpot> _fishableSpots = new();
