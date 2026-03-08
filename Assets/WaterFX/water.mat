@@ -91,6 +91,7 @@ Material:
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
+    - _BoundaryStrength: 0.66
     - _BumpScale: 1
     - _CastShadows: 1
     - _ClearCoatMask: 0
@@ -134,14 +135,17 @@ Material:
     - _ZWriteControl: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BoundaryColor: {r: 0.013349943, g: 0.12892248, b: 0.18867922, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorA: {r: 0.16286935, g: 0.5660378, b: 0.5545485, a: 0}
     - _ColorB: {r: 0.39684942, g: 0.72294265, b: 0.9245283, a: 0}
     - _ColorC: {r: 0.38041505, g: 2.270603, b: 1.454708, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _HorizBoundary: {r: 0.3, g: 0.04, b: 0, a: 0}
     - _Remapo: {r: 78.9, g: 91.7, b: 0, a: 0}
     - _ShoreColor: {r: 1, g: 1, b: 1, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _VertBoundary: {r: 0.21, g: 0.04, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &7857571318841766892
