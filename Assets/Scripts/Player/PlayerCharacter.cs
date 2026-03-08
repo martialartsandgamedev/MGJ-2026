@@ -23,6 +23,11 @@ public class PlayerCharacter : MonoBehaviour, IControllable
 
     private Rigidbody _rb;
 
+    private float _boostProgress;
+    private float _timeUntilBoost;
+    private bool _isBoosting;
+    [SerializeField] private BoostSettings boostSettings;
+
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
@@ -57,6 +62,23 @@ public class PlayerCharacter : MonoBehaviour, IControllable
             movementSettings.Acceleration * Time.fixedDeltaTime);
         _velocity = Vector3.ClampMagnitude(updatedVelocity, movementSettings.MaxSpeed);
 
+        if (_isBoosting)
+        {
+            _boostProgress += Time.fixedDeltaTime;
+            if (_boostProgress > boostSettings.Duration)
+            {
+                _isBoosting = false;
+            }
+
+            var boostSpeed = boostSettings.SpeedCurve.Evaluate(Mathf.Clamp01(_boostProgress / boostSettings.Duration));
+            _velocity *= boostSpeed;
+        }
+
+        if (_timeUntilBoost > 0f)
+        {
+            _timeUntilBoost = Mathf.MoveTowards(_timeUntilBoost, 0f, Time.fixedDeltaTime);
+        }
+
         _rb.linearVelocity = _velocity / Time.fixedDeltaTime;
         currentSpeed = _velocity.magnitude;
     }
@@ -77,6 +99,12 @@ public class PlayerCharacter : MonoBehaviour, IControllable
         m_controlHandler.ProcessIntent(ctx);
         _aimVector = ctx.MoveDirection;
         Inputs = ctx;
+        if (!_isBoosting && ctx.Boost)
+        {
+            _isBoosting = true;
+            _boostProgress = 0;
+            _timeUntilBoost = boostSettings.Cooldown;
+        }
     }
 
     public void OnAction(PlayerAction action)

@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.Utilities;
 
-public enum PlayerAction { Interact, Dash }
+public enum PlayerAction { Interact, Boost }
 
 [Serializable]
 public struct PlayerInputContext
@@ -18,7 +18,7 @@ public struct PlayerInputContext
     public bool Sprint;
     public bool PrimaryAction;
 
-    public PlayerInputContext(Vector2 moveDirection, Vector2 cameraDelta, bool crouch = false, bool sprint = false, bool primaryAction = false, bool interact =  false)
+    public PlayerInputContext(Vector2 moveDirection, Vector2 cameraDelta, bool crouch = false, bool sprint = false, bool primaryAction = false, bool interact =  false, bool boost = false)
     {
         MoveDirection = moveDirection;
         CameraDelta   = cameraDelta;
@@ -26,9 +26,11 @@ public struct PlayerInputContext
         Sprint        = sprint;
         PrimaryAction = primaryAction;
         Interact = interact;
+        Boost = boost;
     }
 
     public bool Interact { get; internal set; }
+    public bool Boost{ get; internal set; }
 }
 
 
