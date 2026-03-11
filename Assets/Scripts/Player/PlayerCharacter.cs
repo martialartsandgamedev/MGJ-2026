@@ -120,6 +120,8 @@ public class PlayerCharacter : MonoBehaviour, IControllable
 
         _rb.linearVelocity = _velocity / Time.fixedDeltaTime;
         currentSpeed = _velocity.magnitude;
+
+        transform.forward = Vector3.RotateTowards(transform.forward, _velocity.normalized, 1f * Time.fixedDeltaTime, 1f * Time.fixedDeltaTime);
     }
 
     private void OnDrawGizmos()
