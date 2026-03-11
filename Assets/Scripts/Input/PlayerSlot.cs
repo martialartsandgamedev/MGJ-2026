@@ -10,10 +10,10 @@ public class PlayerSlot
 
     public ReadOnlyArray<InputDevice> Devices => m_user.pairedDevices;
 
-#if UNITY_EDITOR
+// #if UNITY_EDITOR
     public event Action DebugDespawnPressed;
     private InputAction m_debugDespawnAction;
-#endif
+// #endif
 
     private readonly Inputs m_inputs;
     private InputUser m_user;
@@ -28,11 +28,14 @@ public class PlayerSlot
         m_user = InputUser.CreateUserWithoutPairedDevices();
 
         foreach (var device in devices)
+        {
             m_user = InputUser.PerformPairingWithDevice(device, user: m_user);
+        }
 
         m_onInteract = _ => Controllable.OnAction(PlayerAction.Interact);
         m_onBoost     = _ => Controllable.OnAction(PlayerAction.Boost);
-
+        
+        
         m_inputs = new Inputs();
         m_user.AssociateActionsWithUser(m_inputs);
         m_inputs.Player.Enable();
@@ -42,33 +45,34 @@ public class PlayerSlot
         m_inputs.Player.Interact.started   += m_onInteract;
         m_inputs.Player.Boost.started      += m_onBoost;
 
-#if UNITY_EDITOR
+// #if UNITY_EDITOR
         m_debugDespawnAction = new InputAction("DebugDespawn", InputActionType.Button);
         m_debugDespawnAction.AddBinding("<Gamepad>/select");
         m_debugDespawnAction.AddBinding("<Keyboard>/escape");
         m_debugDespawnAction.performed += OnDebugDespawn;
         m_debugDespawnAction.Enable();
-#endif
+// #endif
     }
 
     public void Dispose()
     {
+        Debug.Log("DISPOSING PLAYER SLOT");
         m_inputs.Player.Attack.started     -= OnPrimaryAction;
         m_inputs.Player.Attack.canceled    -= OnPrimaryAction;
         m_inputs.Player.Interact.started   -= m_onInteract;
         m_inputs.Player.Boost.started      -= m_onBoost;
         
-#if UNITY_EDITOR
+// #if UNITY_EDITOR
         m_debugDespawnAction.performed -= OnDebugDespawn;
         m_debugDespawnAction.Disable();
         m_debugDespawnAction.Dispose();
-#endif
+// #endif
 
         m_inputs.Dispose();
         m_user.UnpairDevicesAndRemoveUser();
     }
 
-#if UNITY_EDITOR
+// #if UNITY_EDITOR
     private void OnDebugDespawn(InputAction.CallbackContext ctx)
     {
         foreach (var device in m_user.pairedDevices)
@@ -80,10 +84,11 @@ public class PlayerSlot
             }
         }
     }
-#endif
+// #endif
 
     public void SetPlayerInputActive(bool active)
     {
+        Debug.LogFormat("Setting input active to {0}", active);
         if (active)
         {
             m_inputs.Player.Enable();
@@ -98,6 +103,7 @@ public class PlayerSlot
         m_intent.CameraDelta   = m_inputs.Player.Look.ReadValue<Vector2>();
         m_intent.Boost         = m_inputs.Player.Boost.WasPressedThisDynamicUpdate();
         Controllable.AssertControlIntent(m_intent);
+        // Debug.LogFormat("Slot input ticked");
     }
 
     private void OnSprint(InputAction.CallbackContext ctx)

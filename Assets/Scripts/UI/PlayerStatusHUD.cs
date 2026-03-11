@@ -50,7 +50,7 @@ public class PlayerStatusHUD : MonoBehaviour
 
     private void OnBoostCooldownChanged(PlayerCharacter player, float remainingCooldown)
     {
-        Debug.Log($"Boosting {remainingCooldown}");
+        // Debug.Log($"Boosting {remainingCooldown}");
         _playerSlotUIs[player].SetBoostProgress(remainingCooldown);
     }
 

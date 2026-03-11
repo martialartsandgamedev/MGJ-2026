@@ -81,6 +81,7 @@ public class PlayerCharacter : MonoBehaviour, IControllable
         floatingUI.ShowPrompt("direction", 5f);
 
         GetComponent<PlayerInventory>()?.Init(playerIndex);
+        GetComponent<FishingController>().Initialise(playerIndex);
     }
 
     public ControlHandler ControlHandler => m_controlHandler;
