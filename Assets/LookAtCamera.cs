@@ -2,8 +2,11 @@ using UnityEngine;
 
 public class LookAtCamera : MonoBehaviour
 {
-    void Update()
+    [SerializeField]
+    private bool _invert = false;
+
+    private void Update()
     {
-        transform.forward = -Camera.main.transform.forward;
+        transform.forward = (_invert ? 1 : -1) * Camera.main.transform.forward;
     }
 }
