@@ -18,6 +18,11 @@ public class CharacterInputManager : MonoBehaviour
         _input = GetComponent<PlayerInput>();
     }
 
+    public void Initialise(int slot)
+    {
+        Slot = slot;
+    }
+
     public void AssignCharacter(PlayerCharacterController playerCharacter)
     {
         _character = playerCharacter;

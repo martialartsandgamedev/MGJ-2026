@@ -43,7 +43,7 @@ public class PlayerManager : PersistentSingleton<PlayerManager>
         input.name = $"PlayerInput_Slot_{slot}";
 
         var pc = input.GetComponent<CharacterInputManager>();
-        // if (pc != null) pc.Initialise(slot);
+        if (pc != null) pc.Initialise(slot);
 
         OnPlayerJoined?.Invoke(slot);
     }
