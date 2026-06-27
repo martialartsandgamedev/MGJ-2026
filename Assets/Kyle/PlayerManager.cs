@@ -13,6 +13,7 @@ public class PlayerManager : PersistentSingleton<PlayerManager>
     [SerializeField] private int maxPlayers = 4;
 
     private readonly Dictionary<int, Player> _players = new();
+    private PlayerInputManager _playerInputManager;
 
     public event Action<int> OnPlayerJoined;
     public event Action<int> OnPlayerLeft;
@@ -21,9 +22,9 @@ public class PlayerManager : PersistentSingleton<PlayerManager>
     {
         base.Awake();
 
-        var playerInputManager = GetComponent<PlayerInputManager>();
-        playerInputManager.onPlayerJoined += HandlePlayerJoined;
-        playerInputManager.onPlayerLeft += HandlePlayerLeft;
+        _playerInputManager = GetComponent<PlayerInputManager>();
+        _playerInputManager.onPlayerJoined += HandlePlayerJoined;
+        _playerInputManager.onPlayerLeft += HandlePlayerLeft;
     }
 
     private void HandlePlayerJoined(PlayerInput input)
@@ -94,6 +95,8 @@ public class PlayerManager : PersistentSingleton<PlayerManager>
 
     public IReadOnlyList<int> GetActiveSlots() => new List<int>(_players.Keys);
 
+    public IReadOnlyDictionary<int, Player> GetActivePlayers() => _players;
+
     public PlayerInput GetInput(int slot) =>
         _players.TryGetValue(slot, out var player) ? player.Input : null;
 
@@ -101,14 +104,26 @@ public class PlayerManager : PersistentSingleton<PlayerManager>
     {
         var go = Instantiate(prefab, position, Quaternion.identity);
 
-        var id = go.GetComponent<SlotIdentifier>() ?? go.AddComponent<SlotIdentifier>();
+        var id = go.GetComponent<SlotIdentifier>();
+        if (id == null)
+        {
+            id = go.AddComponent<SlotIdentifier>();
+        }
         id.Initialise(slot);
 
         var character = go.GetComponent<PlayerCharacterController>();
-        GetInput(slot)?.GetComponent<CharacterInputManager>()?.AssignCharacter(character);
+
+        var input = GetInput(slot);
+        if (input != null)
+        {
+            var controller = input.GetComponent<CharacterInputManager>();
+            if (controller != null)
+            {
+                controller.AssignCharacter(character);
+            }
+        }
 
         return character;
     }
-
 }
 

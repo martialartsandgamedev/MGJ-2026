@@ -15,10 +15,12 @@ public class Player
 {
     public int Slot { get; }
     public PlayerInput Input { get; }
+    public CharacterInputManager Controller { get; }
 
     public Player(int slot, PlayerInput input)
     {
         Slot = slot;
         Input = input;
+        Controller = input.GetComponent<CharacterInputManager>();
     }
 }

@@ -15,15 +15,15 @@ public class PlayerStatusHUD : MonoBehaviour
 
     private void OnEnable()
     {
-        _spawner.PlayerSpawned.AddListener(OnPlayerSpawned);
-        _spawner.PlayerDespawned.AddListener(OnPlayerDespawned);
+        // _spawner.PlayerSpawned.AddListener(OnPlayerSpawned);
+        // _spawner.PlayerDespawned.AddListener(OnPlayerDespawned);
         PlayerInventory.OnInventoryChanged += OnInventoryChanged;
     }
 
     private void OnDisable()
     {
-        _spawner.PlayerSpawned.RemoveListener(OnPlayerSpawned);
-        _spawner.PlayerDespawned.RemoveListener(OnPlayerDespawned);
+        // _spawner.PlayerSpawned.RemoveListener(OnPlayerSpawned);
+        // _spawner.PlayerDespawned.RemoveListener(OnPlayerDespawned);
         PlayerInventory.OnInventoryChanged -= OnInventoryChanged;
     }
 
