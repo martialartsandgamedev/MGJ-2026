@@ -17,7 +17,7 @@ public struct AnimationContext
 {
     public float MoveSpeed;
     public float RotateSpeed;
-    
+
     public AnimationContext(float moveSpeed, float rotateSpeed)
     {
         MoveSpeed = moveSpeed;
@@ -25,10 +25,10 @@ public struct AnimationContext
     }
 }
 
-public class ControlHandler: MonoBehaviour
+public class ControlHandler : MonoBehaviour
 {
     public UnityEngine.CharacterController Controller;
-    
+
 
     private void OnEnable()
     {
@@ -39,19 +39,12 @@ public class ControlHandler: MonoBehaviour
     {
         string[] parts = referenceSemantic.Split(':');
         string reference = parts[0];
-        bool booleanValue = int.Parse(parts[1]) ==1;
-     
+        bool booleanValue = int.Parse(parts[1]) == 1;
+
         Debug.LogFormat($"Setting animator bool reference {reference} to {booleanValue}");
-        
+
     }
-    
-    
-    public void ProcessIntent(PlayerInputContext ctx)
-    {
-        // if(ctx.Dash)
-        // {
-        //     Debug.LogWarning($"I'm dashing");
-        // }
-    }
+
+
 
 }

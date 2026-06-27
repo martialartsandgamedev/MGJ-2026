@@ -13,7 +13,7 @@ public class BankingZone : MonoBehaviour
 
         inventory.NotifyEnterBankZone();
 
-        if (inventory.HeldCount > 0 && other.TryGetComponent(out PlayerCharacter character))
+        if (inventory.HeldCount > 0 && other.TryGetComponent(out PlayerCharacterController character))
             character.floatingUI.ShowPrompt("bank", 0f);
     }
 
@@ -23,7 +23,7 @@ public class BankingZone : MonoBehaviour
 
         inventory.NotifyExitBankZone();
 
-        if (other.TryGetComponent(out PlayerCharacter character))
+        if (other.TryGetComponent(out PlayerCharacterController character))
             character.floatingUI.HidePrompt();
     }
 }

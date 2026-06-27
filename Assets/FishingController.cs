@@ -19,25 +19,26 @@ public class FishingController : MonoBehaviour
         IsFishing,
     }
 
-    [SerializeField] private PlayerCharacter _playerCharacter;
+    [SerializeField] private PlayerCharacterController _playerCharacter;
 
     [Header("Debug")]
     [Tooltip("A MeshRenderer that acts as a debug way to show that the player is over a fishing spot")]
     [SerializeField]
     private MeshRenderer model;
 
-    [Tooltip("Optional TMP Text that displays the players current state")] [SerializeField]
+    [Tooltip("Optional TMP Text that displays the players current state")]
+    [SerializeField]
     private TextMeshProUGUI statusText;
 
     private List<FishingAction> _actions;
     private FishingSpot _activeFishingSpot;
     private PlayerState m_currentPlayerState = PlayerState.CantFish;
     private bool m_interactPending;
-    
+
     public FloatingUI _playerCanvas;
-    
+
     private DefaultFishingWidget _uiController;
-    
+
     private Coroutine _fishingCoroutine;
     private PlayerInventory _inventory;
 
@@ -88,23 +89,24 @@ public class FishingController : MonoBehaviour
     }
 
     public void Initialise(int playerIndex)
-    { 
+    {
         var color = Color.cyan;
-            switch (playerIndex) {
-            case 0: 
+        switch (playerIndex)
+        {
+            case 0:
                 ColorUtility.TryParseHtmlString("#00FF28", out color);
                 model.material.color = color;
                 break;
-            case 1: 
-                ColorUtility.TryParseHtmlString("#A759CF", out  color);
+            case 1:
+                ColorUtility.TryParseHtmlString("#A759CF", out color);
                 model.material.color = color;
                 break;
-            case 2: 
+            case 2:
                 ColorUtility.TryParseHtmlString("#E7642D", out color);
                 model.material.color = color;
                 break;
-            case 3: 
-                ColorUtility.TryParseHtmlString("#EE398B", out  color);
+            case 3:
+                ColorUtility.TryParseHtmlString("#EE398B", out color);
                 model.material.color = color;
                 break;
             default:
@@ -155,18 +157,18 @@ public class FishingController : MonoBehaviour
 
     private void OnFishingSpotDepleted(FishingSpot context)
     {
-        if(_activeFishingSpot != null && context == _activeFishingSpot)
+        if (_activeFishingSpot != null && context == _activeFishingSpot)
         {
-             _fishableSpots.Remove(_activeFishingSpot);
-        
-        if (_uiController)
-        {
-            Destroy(_uiController.gameObject);
-        }
+            _fishableSpots.Remove(_activeFishingSpot);
 
-        _activeFishingSpot = null;
-        SetState(_fishableSpots.Any() ? PlayerState.CanFish : PlayerState.CantFish);
-        StopCoroutine(_fishingCoroutine); 
+            if (_uiController)
+            {
+                Destroy(_uiController.gameObject);
+            }
+
+            _activeFishingSpot = null;
+            SetState(_fishableSpots.Any() ? PlayerState.CanFish : PlayerState.CantFish);
+            StopCoroutine(_fishingCoroutine);
         }
     }
 
@@ -236,7 +238,7 @@ public class FishingController : MonoBehaviour
 
             // If we are in an action window
             bool interacted = ConsumeInteract();
-            
+
             if (interacted && activeAction == null)
             {
                 Debug.Log("[FishingController] Failed to hit action");
@@ -267,7 +269,7 @@ public class FishingController : MonoBehaviour
 
                 _inventory?.AddFish(fish);
                 ScoreManager.ins?.ReportCatch(_playerCharacter.PlayerIndex, fish);
-               
+
                 _activeFishingSpot = null;
                 Destroy(_uiController.gameObject);
                 yield break;

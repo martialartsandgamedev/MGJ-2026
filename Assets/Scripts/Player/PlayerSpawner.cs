@@ -10,17 +10,25 @@ public class PlayerSpawner : MonoBehaviour
     [SerializeField] private Transform[] m_spawnPoints;
 
     [Header("Events")]
-    public UnityEvent<int, PlayerCharacter> PlayerSpawned;
-    public UnityEvent<int, PlayerCharacter> PlayerDespawned;
+    public UnityEvent<int, PlayerCharacterController> PlayerSpawned;
+    public UnityEvent<int, PlayerCharacterController> PlayerDespawned;
 
     [Header("Despawn")]
     [Tooltip("Seconds before a player is automatically despawned. Set to 0 to disable.")]
     [SerializeField] private float m_despawnDelay = 180f;
 
-    private readonly List<(PlayerCharacter player, int index, Coroutine coroutine)> m_active = new();
+    private readonly List<(PlayerCharacterController player, int index, Coroutine coroutine)> m_active = new();
 
-    private void OnEnable()  => InputManager.ins.PlayerJoinRequestEvent.AddListener(OnJoinRequest);
-    private void OnDisable() => InputManager.ins.PlayerJoinRequestEvent.RemoveListener(OnJoinRequest);
+    public void OnPlayerJoinedEvent(PlayerInput input)
+    {
+        Debug.Log("Player joined");
+        OnJoinRequest(input.devices.ToArray());
+    }
+
+    public void OnPlayerLeftEvent(PlayerInput input)
+    {
+        Debug.Log("Player left");
+    }
 
     private int GetNextAvailableIndex()
     {
@@ -29,7 +37,7 @@ public class PlayerSpawner : MonoBehaviour
         return i;
     }
 
-    private void OnJoinRequest(InputDevice[] devices)
+    public void OnJoinRequest(InputDevice[] devices)
     {
         int index = GetNextAvailableIndex();
         var spawnPoint = m_spawnPoints != null && m_spawnPoints.Length > 0
@@ -37,33 +45,28 @@ public class PlayerSpawner : MonoBehaviour
             : transform;
 
         var go = Instantiate(m_playerPrefab, spawnPoint.position, spawnPoint.rotation);
-        var player = go.GetComponent<PlayerCharacter>();
+        var player = go.GetComponent<PlayerCharacterController>();
         player.Init(index, devices);
 
-        var slot = InputManager.ins.Register(player, devices);
-
-// #if UNITY_EDITOR
-        slot.DebugDespawnPressed += () => StartCoroutine(DespawnNextFrame(player));
-// #endif
 
         Coroutine coroutine = m_despawnDelay > 0f ? StartCoroutine(DespawnAfterDelay(player)) : null;
         m_active.Add((player, index, coroutine));
         PlayerSpawned?.Invoke(index, player);
     }
 
-    private IEnumerator DespawnNextFrame(PlayerCharacter player)
+    public IEnumerator DespawnNextFrame(PlayerCharacterController player)
     {
         yield return null;
         DespawnPlayer(player);
     }
 
-    private IEnumerator DespawnAfterDelay(PlayerCharacter player)
+    private IEnumerator DespawnAfterDelay(PlayerCharacterController player)
     {
         yield return new WaitForSeconds(m_despawnDelay);
         DespawnPlayer(player);
     }
 
-    private void DespawnPlayer(PlayerCharacter player)
+    private void DespawnPlayer(PlayerCharacterController player)
     {
         int despawnedIndex = -1;
         for (int i = m_active.Count - 1; i >= 0; i--)

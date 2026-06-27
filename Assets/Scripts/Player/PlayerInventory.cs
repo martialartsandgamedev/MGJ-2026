@@ -34,13 +34,13 @@ public class PlayerInventory : MonoBehaviour
     }
 
     private readonly List<Fish> _heldFish = new();
-    private PlayerCharacter _character;
+    private PlayerCharacterController _character;
     private bool _inBankZone;
 
     public void Init(int playerIndex)
     {
         PlayerIndex = playerIndex;
-        _character = GetComponent<PlayerCharacter>();
+        _character = GetComponent<PlayerCharacterController>();
     }
 
     public void NotifyEnterBankZone()

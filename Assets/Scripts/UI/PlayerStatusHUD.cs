@@ -5,7 +5,7 @@ public class PlayerStatusHUD : MonoBehaviour
 {
     [SerializeField] private PlayerSpawner _spawner;
     [SerializeField] private PlayerSlotUI[] _slots;
-    private Dictionary<PlayerCharacter, PlayerSlotUI> _playerSlotUIs = new();
+    private Dictionary<PlayerCharacterController, PlayerSlotUI> _playerSlotUIs = new();
 
     private void Awake()
     {
@@ -27,7 +27,7 @@ public class PlayerStatusHUD : MonoBehaviour
         PlayerInventory.OnInventoryChanged -= OnInventoryChanged;
     }
 
-    private void OnPlayerSpawned(int playerIndex, PlayerCharacter player)
+    private void OnPlayerSpawned(int playerIndex, PlayerCharacterController player)
     {
         if (!IsValidSlot(playerIndex)) return;
         _slots[playerIndex].SetActive($"Player {playerIndex + 1}");
@@ -35,7 +35,7 @@ public class PlayerStatusHUD : MonoBehaviour
         player.boostCooldownChanged.AddListener(OnBoostCooldownChanged);
     }
 
-    private void OnPlayerDespawned(int playerIndex, PlayerCharacter player)
+    private void OnPlayerDespawned(int playerIndex, PlayerCharacterController player)
     {
         if (!IsValidSlot(playerIndex)) return;
         _slots[playerIndex].SetEmpty(playerIndex);
@@ -48,7 +48,7 @@ public class PlayerStatusHUD : MonoBehaviour
         _slots[playerIndex].UpdateInventory(inventory);
     }
 
-    private void OnBoostCooldownChanged(PlayerCharacter player, float remainingCooldown)
+    private void OnBoostCooldownChanged(PlayerCharacterController player, float remainingCooldown)
     {
         // Debug.Log($"Boosting {remainingCooldown}");
         _playerSlotUIs[player].SetBoostProgress(remainingCooldown);
