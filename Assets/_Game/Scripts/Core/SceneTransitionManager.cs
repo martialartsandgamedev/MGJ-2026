@@ -23,13 +23,21 @@ public class SceneTransitionManager : PersistentSingleton<SceneTransitionManager
 #endif
     }
 
+    private bool _transitioning;
+
     public void GoToGame()
     {
+        if (_transitioning) return;
+        _transitioning = true;
         SceneManager.LoadScene(gameScene);
+        _transitioning = false;
     }
 
     public void GoToLobby()
     {
+        if (_transitioning) return;
+        _transitioning = true;
         SceneManager.LoadScene(lobbyScene);
+        _transitioning = false;
     }
 }

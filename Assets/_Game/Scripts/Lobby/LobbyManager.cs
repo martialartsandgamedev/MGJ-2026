@@ -4,8 +4,9 @@ using UnityEngine.InputSystem;
 
 /// <summary>
 /// Scene-level coordinator for the lobby.
-/// Subscribes to PlayerController events (interact, leave) rather than
-/// being called directly — keeps Core assembly free of Lobby references.
+/// Ready state comes from players standing in a PlayerTriggerZone (wired in the
+/// Inspector to OnPlayerEnteredReadyZone/OnPlayerExitedReadyZone), not from an
+/// input button — see PlayerTriggerZone.
 ///
 /// Owns ready state directly. PlayerManager has no concept of "ready" —
 /// it's a lobby-only idea, and tracking it here means it naturally resets
@@ -23,11 +24,7 @@ public class LobbyManager : Singleton<LobbyManager>
     [SerializeField] private GameObject characterPrefab;
     [SerializeField] private Transform[] spawnPoints;
 
-    [Header("Ready Zone")]
-    [SerializeField] private PlayerTriggerZone readyZone;
-
     private readonly Dictionary<int, GameObject> _characters = new();
-    private readonly Dictionary<int, bool> _readyState = new();
     private bool _transitioning;
 
     private void OnEnable()
@@ -62,7 +59,6 @@ public class LobbyManager : Singleton<LobbyManager>
         foreach (var slot in PlayerManager.Instance.GetActiveSlots())
         {
             SpawnCharacterForSlot(slot);
-            _readyState[slot] = false;
             LobbyUI.Instance?.SetSlotOccupied(slot, true);
         }
     }
@@ -76,7 +72,6 @@ public class LobbyManager : Singleton<LobbyManager>
         // Only fires for joins that happen after Start() — safe to spawn here
         SubscribeToPlayerController(slot);
         SpawnCharacterForSlot(slot);
-        _readyState[slot] = false;
         LobbyUI.Instance?.SetSlotOccupied(slot, true);
     }
 
@@ -84,7 +79,7 @@ public class LobbyManager : Singleton<LobbyManager>
     {
         UnsubscribeFromPlayerController(slot);
         DestroyCharacterForSlot(slot);
-        _readyState.Remove(slot);
+        readyPlayers.Remove(slot);
         LobbyUI.Instance?.SetSlotOccupied(slot, false);
     }
 
@@ -97,16 +92,20 @@ public class LobbyManager : Singleton<LobbyManager>
     public void OnPlayerEnteredReadyZone(SlotIdentifier slot)
     {
         readyPlayers.Add(slot.Slot);
+        LobbyUI.Instance?.SetSlotReady(slot.Slot, true);
         CheckAllReady();
     }
 
     public void OnPlayerExitedReadyZone(SlotIdentifier slot)
     {
         readyPlayers.Remove(slot.Slot);
+        LobbyUI.Instance?.SetSlotReady(slot.Slot, false);
     }
 
     private void CheckAllReady()
     {
+        if (_transitioning) return;
+
         var activeSlots = PlayerManager.Instance.GetActiveSlots();
 
         if (activeSlots.Count == 0)
@@ -118,20 +117,8 @@ public class LobbyManager : Singleton<LobbyManager>
                 return;
         }
 
+        _transitioning = true;
         SceneTransitionManager.Instance.GoToGame();
-    }
-
-    private void HandleInteract(int slot)
-    {
-        if (_transitioning) return;
-        // if (readyZone != null && !readyZone.IsPlayerInZone(slot)) return;
-
-        bool ready = !_readyState.GetValueOrDefault(slot, false);
-        _readyState[slot] = ready;
-        LobbyUI.Instance?.SetSlotReady(slot, ready);
-
-        if (AllPlayersReady())
-            TransitionToGame();
     }
 
     private void HandleLeave(int slot)
@@ -140,39 +127,12 @@ public class LobbyManager : Singleton<LobbyManager>
         PlayerManager.Instance.RemovePlayer(slot);
     }
 
-#if UNITY_EDITOR
-    /// <summary>
-    /// Editor-only. Lets EditorTestPlayerInjector mark an injected test player
-    /// as ready without needing to simulate standing in the zone and pressing
-    /// Interact. Not part of the normal gameplay path — HandleInteract remains
-    /// the only way a real player readies up.
-    /// </summary>
-    public void ForceReady(int slot, bool ready)
-    {
-        if (!_readyState.ContainsKey(slot)) return;
-        _readyState[slot] = ready;
-        LobbyUI.Instance?.SetSlotReady(slot, ready);
-
-        if (AllPlayersReady())
-            TransitionToGame();
-    }
-#endif
-
     // -------------------------------------------------------------------------
-
-    private bool AllPlayersReady()
-    {
-        if (_readyState.Count == 0) return false;
-        foreach (var ready in _readyState.Values)
-            if (!ready) return false;
-        return true;
-    }
 
     private void SubscribeToPlayerController(int slot)
     {
         var pc = GetPlayerController(slot);
         if (pc == null) return;
-        pc.OnInteractPressed += HandleInteract;
         pc.OnLeavePressed += HandleLeave;
     }
 
@@ -180,7 +140,6 @@ public class LobbyManager : Singleton<LobbyManager>
     {
         var pc = GetPlayerController(slot);
         if (pc == null) return;
-        pc.OnInteractPressed -= HandleInteract;
         pc.OnLeavePressed -= HandleLeave;
     }
 
@@ -201,13 +160,5 @@ public class LobbyManager : Singleton<LobbyManager>
         if (!_characters.TryGetValue(slot, out var go)) return;
         Destroy(go);
         _characters.Remove(slot);
-    }
-
-    private void TransitionToGame()
-    {
-        _transitioning = true;
-        SceneTransitionManager.Instance.GoToGame();
-        // No reset needed — _readyState is scoped to this LobbyManager instance
-        // and is naturally rebuilt fresh next time the lobby scene loads.
     }
 }
