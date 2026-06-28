@@ -11,16 +11,6 @@ public class PlayerTriggerZone : MonoBehaviour
     [SerializeField] private PlayerEvent onPlayerEnter;
     [SerializeField] private PlayerEvent onPlayerExit;
 
-    private Collider _zoneCollider;
-
-    private void OnEnable()
-    {
-        if (_zoneCollider == null)
-        {
-            _zoneCollider = GetComponent<Collider>();
-        }
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<SlotIdentifier>(out var slot))
@@ -39,7 +29,7 @@ public class PlayerTriggerZone : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (_zoneCollider == null)
+        if (!TryGetComponent<Collider>(out var zoneCollider))
         {
             return;
         }
@@ -47,7 +37,7 @@ public class PlayerTriggerZone : MonoBehaviour
         Gizmos.color = new Color(0f, 1f, 0f, 0.25f);
         Gizmos.matrix = transform.localToWorldMatrix;
 
-        switch (_zoneCollider)
+        switch (zoneCollider)
         {
             case BoxCollider box:
                 Gizmos.DrawCube(box.center, box.size);
