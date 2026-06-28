@@ -106,4 +106,4 @@ MonoBehaviour:
   lobbySceneAsset: {fileID: 102900000, guid: 8aa1909316efa7a428d02398a16aa6e5, type: 3}
   gameSceneAsset: {fileID: 102900000, guid: 82363234a4d93e047b61abe1f45bd112, type: 3}
   lobbyScene: Lobby
-  gameScene: level_000
+  gameScene: Gameplay
