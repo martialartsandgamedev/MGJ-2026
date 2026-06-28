@@ -144,7 +144,7 @@ public class LobbyManager : Singleton<LobbyManager>
     }
 
     private CharacterInputManager GetPlayerController(int slot) =>
-        PlayerManager.Instance.GetInput(slot)?.GetComponent<CharacterInputManager>();
+        PlayerManager.Instance.GetController(slot);
 
     private void SpawnCharacterForSlot(int slot)
     {
