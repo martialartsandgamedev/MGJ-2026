@@ -37,14 +37,14 @@ public class PlayerManager : PersistentSingleton<PlayerManager>
             return;
         }
 
-        _players[slot] = new Player(slot, input);
+        var player = new Player(slot, input);
+        _players[slot] = player;
 
         DontDestroyOnLoad(input.gameObject);
         input.transform.SetParent(transform);
         input.name = $"PlayerInput_Slot_{slot}";
 
-        var pc = input.GetComponent<CharacterInputManager>();
-        if (pc != null) pc.Initialise(slot);
+        if (player.Controller != null) player.Controller.Initialise(slot);
 
         OnPlayerJoined?.Invoke(slot);
     }
@@ -101,6 +101,9 @@ public class PlayerManager : PersistentSingleton<PlayerManager>
     public PlayerInput GetInput(int slot) =>
         _players.TryGetValue(slot, out var player) ? player.Input : null;
 
+    public CharacterInputManager GetController(int slot) =>
+        _players.TryGetValue(slot, out var player) ? player.Controller : null;
+
     public PlayerCharacterController SpawnCharacter(int slot, GameObject prefab, Vector3 position)
     {
         var go = Instantiate(prefab, position, Quaternion.identity);
@@ -114,16 +117,14 @@ public class PlayerManager : PersistentSingleton<PlayerManager>
 
         var character = go.GetComponent<PlayerCharacterController>();
 
-        var input = GetInput(slot);
-        if (input != null)
+        if (_players.TryGetValue(slot, out var player))
         {
-            var controller = input.GetComponent<CharacterInputManager>();
-            if (controller != null)
+            if (player.Controller != null)
             {
-                controller.AssignCharacter(character);
+                player.Controller.AssignCharacter(character);
             }
 
-            character.Init(slot, input.devices.ToArray());
+            character.Init(slot, player.Input.devices.ToArray());
         }
 
         OnCharacterSpawned?.Invoke(slot, character);
