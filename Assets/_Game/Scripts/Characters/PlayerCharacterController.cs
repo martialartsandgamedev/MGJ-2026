@@ -17,7 +17,6 @@ public class PlayerCharacterController : MonoBehaviour
     public int PlayerIndex { get; private set; }
     private Vector2 _aimVector;
     private Vector3 _velocity;
-    private Vector2 _moveVector;
     public FloatingUI floatingUI;
     public string ControllableID => m_id;
     public event Action InteractPressed;
@@ -33,11 +32,9 @@ public class PlayerCharacterController : MonoBehaviour
     [SerializeField] private BoostSettings boostSettings;
 
     private PlayerInventory _inventory;
-    private Inputs m_inputs;
     public Gamepad Gamepad { get; private set; }
     private Vector3 _boostDirection;
     private readonly Dictionary<string, Vector3> _externalVelocitySources = new();
-    private Vector3 _lastExternalVelocity;
 
     private void Awake()
     {
@@ -91,39 +88,43 @@ public class PlayerCharacterController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Strip last frame's external contribution so player control runs on player-only velocity
-        _velocity = _rb.linearVelocity * Time.fixedDeltaTime - _lastExternalVelocity;
+        var dt = Time.fixedDeltaTime;
 
-        var dragReduction = _aimVector.magnitude <= 0.1f ? movementSettings.DragStrength * Time.fixedDeltaTime : 0;
-        var draggedVelocity = Vector3.MoveTowards(_velocity, Vector3.zero, dragReduction);
-        var updatedVelocity = Vector3.MoveTowards(draggedVelocity,
-            new Vector3(_aimVector.x, 0, _aimVector.y),
-            movementSettings.Acceleration * Time.fixedDeltaTime);
-        _velocity = Vector3.ClampMagnitude(updatedVelocity, movementSettings.MaxSpeed);
+        ApplySteering(dt);
+        ApplyBoost(dt);
+        TickBoostCooldown(dt);
 
-        if (_isBoosting)
-        {
-            _boostProgress += Time.fixedDeltaTime;
-            if (_boostProgress > boostSettings.Duration)
-            {
-                _isBoosting = false;
-            }
-
-            var boostSpeed = boostSettings.SpeedCurve.Evaluate(Mathf.Clamp01(_boostProgress / boostSettings.Duration));
-            _velocity += _boostDirection * (boostSpeed * Time.fixedDeltaTime);
-        }
-
-        if (_timeUntilBoost > 0f)
-        {
-            _timeUntilBoost = Mathf.MoveTowards(_timeUntilBoost, 0f, Time.fixedDeltaTime);
-            boostCooldownChanged?.Invoke(this, _timeUntilBoost);
-        }
-
-        _lastExternalVelocity = GetTotalExternalVelocity() * Time.fixedDeltaTime;
-        _rb.linearVelocity = (_velocity + _lastExternalVelocity) / Time.fixedDeltaTime;
+        _rb.linearVelocity = _velocity + GetTotalExternalVelocity();
         currentSpeed = _velocity.magnitude;
+        transform.forward = Vector3.RotateTowards(transform.forward, _velocity.normalized, dt, dt);
+    }
 
-        transform.forward = Vector3.RotateTowards(transform.forward, _velocity.normalized, 1f * Time.fixedDeltaTime, 1f * Time.fixedDeltaTime);
+    private void ApplySteering(float dt)
+    {
+        var drag = _aimVector.magnitude <= 0.1f ? movementSettings.DragStrength * dt : 0f;
+        var afterDrag = Vector3.MoveTowards(_velocity, Vector3.zero, drag);
+        var aimTarget = new Vector3(_aimVector.x, 0f, _aimVector.y) * movementSettings.MaxSpeed;
+        var afterSteer = Vector3.MoveTowards(afterDrag, aimTarget, movementSettings.Acceleration * dt);
+        _velocity = Vector3.ClampMagnitude(afterSteer, movementSettings.MaxSpeed);
+    }
+
+    private void ApplyBoost(float dt)
+    {
+        if (!_isBoosting) return;
+
+        _boostProgress += dt;
+        var t = Mathf.Clamp01(_boostProgress / boostSettings.Duration);
+        _velocity += _boostDirection * boostSettings.SpeedCurve.Evaluate(t);
+
+        if (_boostProgress >= boostSettings.Duration)
+            _isBoosting = false;
+    }
+
+    private void TickBoostCooldown(float dt)
+    {
+        if (_timeUntilBoost <= 0f) return;
+        _timeUntilBoost = Mathf.MoveTowards(_timeUntilBoost, 0f, dt);
+        boostCooldownChanged?.Invoke(this, _timeUntilBoost);
     }
 
     private void OnDrawGizmos()
