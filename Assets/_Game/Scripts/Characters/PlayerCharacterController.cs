@@ -37,6 +37,7 @@ public class PlayerCharacterController : MonoBehaviour
     public Gamepad Gamepad { get; private set; }
     private Vector3 _boostDirection;
     private readonly Dictionary<string, Vector3> _externalVelocitySources = new();
+    private Vector3 _lastExternalVelocity;
 
     private void Awake()
     {
@@ -90,8 +91,8 @@ public class PlayerCharacterController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Convert from units/sec to units/frame to preserve existing tuning
-        _velocity = _rb.linearVelocity * Time.fixedDeltaTime;
+        // Strip last frame's external contribution so player control runs on player-only velocity
+        _velocity = _rb.linearVelocity * Time.fixedDeltaTime - _lastExternalVelocity;
 
         var dragReduction = _aimVector.magnitude <= 0.1f ? movementSettings.DragStrength * Time.fixedDeltaTime : 0;
         var draggedVelocity = Vector3.MoveTowards(_velocity, Vector3.zero, dragReduction);
@@ -118,8 +119,8 @@ public class PlayerCharacterController : MonoBehaviour
             boostCooldownChanged?.Invoke(this, _timeUntilBoost);
         }
 
-        var externalVelocity = GetTotalExternalVelocity() * Time.fixedDeltaTime;
-        _rb.linearVelocity = (_velocity + externalVelocity) / Time.fixedDeltaTime;
+        _lastExternalVelocity = GetTotalExternalVelocity() * Time.fixedDeltaTime;
+        _rb.linearVelocity = (_velocity + _lastExternalVelocity) / Time.fixedDeltaTime;
         currentSpeed = _velocity.magnitude;
 
         transform.forward = Vector3.RotateTowards(transform.forward, _velocity.normalized, 1f * Time.fixedDeltaTime, 1f * Time.fixedDeltaTime);
